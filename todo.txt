@@ -1,0 +1,2 @@
+Remodel the database
+Add functions to calculate gross total and studd in home.js
