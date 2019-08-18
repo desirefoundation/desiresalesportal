@@ -58,14 +58,14 @@ export class Login extends Component {
                     <div className='field'>
                         <label className='label'>Email</label>
                         <div className='control'>
-                            <input id='emailInput' placeholder='john@example.com' className='input' type='email' />
+                            <input id='emailInput' placeholder='john@example.com' className='input' type='email' required />
                         </div>
                     </div>
 
                     <div className='field'>
                         <label className='label'>Password</label>
                         <div className='control'>
-                            <input id='passwordInput' className='input' type='password'/>
+                            <input id='passwordInput' className='input' type='password' required/>
                         </div>
                     </div>
 

@@ -7,25 +7,25 @@ export class Home extends Component {
     auth = firebaseapp.auth();
     database = firebaseapp.database();
 
-    state = {
-        "loggedIn": false,
-        "emailid": "",
-        "password": "",
-        "buddygroup": "",
-        "copiedTakenLot2": 0,
-        "copiesTakenLot1": 0,
-        "copyTransactions": [],
-        "defective": 0,
-        "email": "",
-        "name": "",
-        "rollno": 0,
-        "soldTillDateCash": 0,
-        "soldTillDatePaytm": 0
-    }
-
     constructor(){
         super()
         let loginStatus = localStorage.getItem("loginStatus")
+
+        this.state = {
+            "loggedIn": false,
+            "emailid": "",
+            "password": "",
+            "buddygroup": "",
+            "copiedTakenLot2": 0,
+            "copiesTakenLot1": 0,
+            "copyTransactions": [],
+            "defective": 0,
+            "email": "",
+            "name": "",
+            "rollno": 0,
+            "soldTillDateCash": 0,
+            "soldTillDatePaytm": 0
+        }
         
         if(loginStatus === "true"){
             let email_id = localStorage.getItem("email_id");
@@ -37,8 +37,15 @@ export class Home extends Component {
 
                     this.database.ref(`/salesdata/${uid}`).on('value', (snapshot) => {
                         let sales_data = snapshot.val();
-                        console.log(sales_data)
+                        //console.log(sales_data)
                         this.setState(sales_data);
+
+                        let e = document.getElementById("stockExchangedCopies");
+                        let total = this.getTotalExchanged()
+                        e.innerHTML += `<b>${total.toString()}</b>`
+                        
+                        let ee = document.getElementById("exchangeExchangedCopies")
+                        ee.innerHTML += `<b>${total.toString()}</b>  `
                     });
                 })
                 .catch((error) => {
@@ -92,6 +99,28 @@ export class Home extends Component {
         m.setAttribute("class", "modal is-active");
     }
 
+
+    // Data Aggregator Functions
+    getTotalExchanged = () => {
+        let total = 0;
+
+        let transactions_arr = this.state.copyTransactions;
+
+        for(let i=0; i<transactions_arr.length; i++){
+            total += transactions_arr[i].amount;
+        }
+
+        return total;
+    }
+
+    getGrossTotalCopies = () => {
+        let total;
+
+        total = this.copiesTakenLot1 + this.copiesTakenLot1 + this.getTotalExchanged() - this.state.defective
+
+        return total;
+    }
+
     render() {
         if(this.state.loggedIn == null || (this.state.loggedIn === "false")){
             return <Redirect to='/' />
@@ -122,7 +151,7 @@ export class Home extends Component {
                             </h1>
 
                             <h1 className='title' style={{fontWeight: '300'}}>
-                                ₹ {(this.state.soldTillDateCash + this.state.soldTillDatePaytm) * 35} /-
+                                ₹ {((this.state.soldTillDateCash + this.state.soldTillDatePaytm) * 35).toString()} /-
                             </h1>
                             
                         </div>
@@ -166,11 +195,11 @@ export class Home extends Component {
                             <p style={notebookStatusStyle}>Copies taken in Lot 1 : <b>{this.state.copiesTakenLot1}</b>  </p>
                             <p style={notebookStatusStyle}>Copies taken in Lot 2 : <b>{this.state.copiedTakenLot2}</b>  </p>
                             <br></br>
-                            <p style={notebookStatusStyle}>Exchanged : <b>0</b>  </p>
+                            <p id="stockExchangedCopies" style={notebookStatusStyle}>Exchanged : </p>
                             <p style={notebookStatusStyle}>Defective : <b>{this.state.defective}</b>  </p>
                             <br></br>
                             <p style={notebookStatusStyle}>Gross Total:  <b>80</b>  </p>
-                            <p style={notebookStatusStyle}>Total Copies Sold :  <b>{this.state.soldTillDatePaytm + this.state.soldTillDateCash}</b>  </p>
+                            <p style={notebookStatusStyle}>Total Copies Sold :  <b>{(this.state.soldTillDatePaytm + this.state.soldTillDateCash).toString()}</b>  </p>
                             <p style={notebookStatusStyle}>Total Copies in Hand : <b>52</b>  </p>
                         </div>
                     </div>
@@ -182,7 +211,7 @@ export class Home extends Component {
                             </h1>
                             <br></br>
                             <br></br>
-                            <p style={notebookExchangedStyle}>Total Exchanged : <b>0</b>  </p>
+                            <p id="exchangeExchangedCopies" style={notebookExchangedStyle}>Total Exchanged : </p>
                         </div>
                     </div>
                 </div>
@@ -302,7 +331,7 @@ const titleStyle = {
     fontSize: '3.5rem',
     fontFamily: 'Rubik, sans-serif',
     marginLeft: '2rem',
-    marginTop: '2rem',
+    paddingTop: '2rem',
     fontWeight: '500'
 }
 
