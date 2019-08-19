@@ -1,13 +1,13 @@
 import firebase from 'firebase'
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCae6ACNKA5GY7OWa5WS7G3_qUFsKlopFQ",
-    authDomain: "desiresalesportal.firebaseapp.com",
-    databaseURL: "https://desiresalesportal.firebaseio.com",
-    projectId: "desiresalesportal",
+    apiKey: "AIzaSyDs1P-39sb-u1IrUkIcX1roqSJIK99Cxlk",
+    authDomain: "desiresalesportal-9397a.firebaseapp.com",
+    databaseURL: "https://desiresalesportal-9397a.firebaseio.com",
+    projectId: "desiresalesportal-9397a",
     storageBucket: "",
-    messagingSenderId: "428365341883",
-    appId: "1:428365341883:web:6b807be59aa63424"
+    messagingSenderId: "713354689146",
+    appId: "1:713354689146:web:b76ca164010d5526"
 };
 
 let firebaseapp = firebase.initializeApp(firebaseConfig)

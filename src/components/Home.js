@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
 
 import firebaseapp from '../firebase'
 
@@ -7,27 +6,26 @@ export class Home extends Component {
     auth = firebaseapp.auth();
     database = firebaseapp.database();
 
+    state = {
+        "loggedIn": false,
+        "password": "",
+        "buddygroup": "",
+        "copiesTakenLot2": 0,
+        "copiesTakenLot1": 0,
+        "copyTransactions": [],
+        "defective": 0,
+        "email": "",
+        "name": "",
+        "rollno": 0,
+        "soldTillDateCash": 0,
+        "soldTillDatePaytm": 0
+    }
+
     constructor(){
         super()
-        let loginStatus = localStorage.getItem("loginStatus")
-
-        this.state = {
-            "loggedIn": false,
-            "emailid": "",
-            "password": "",
-            "buddygroup": "",
-            "copiedTakenLot2": 0,
-            "copiesTakenLot1": 0,
-            "copyTransactions": [],
-            "defective": 0,
-            "email": "",
-            "name": "",
-            "rollno": 0,
-            "soldTillDateCash": 0,
-            "soldTillDatePaytm": 0
-        }
+        let loginStatus = localStorage.getItem("loginStatus");
         
-        if(loginStatus === "true"){
+        if(loginStatus){
             let email_id = localStorage.getItem("email_id");
             let pw = localStorage.getItem("password");
 
@@ -37,7 +35,6 @@ export class Home extends Component {
 
                     this.database.ref(`/salesdata/${uid}`).on('value', (snapshot) => {
                         let sales_data = snapshot.val();
-                        //console.log(sales_data)
                         this.setState(sales_data);
 
                         let e = document.getElementById("stockExchangedCopies");
@@ -52,19 +49,17 @@ export class Home extends Component {
                     alert(error.message);
                 });
 
-            this.state = {
+            this.setState({
                 loggedIn: true,
                 emailid : email_id,
                 password: pw
-            }
-
-
+            });
             
         }
         else {
-            this.state = {
+            this.setState({
                 loggedIn: false
-            }
+            })
         }
 
     }
@@ -121,11 +116,43 @@ export class Home extends Component {
         return total;
     }
 
-    render() {
-        if(this.state.loggedIn == null || (this.state.loggedIn === "false")){
-            return <Redirect to='/' />
-        }
+    startLogout = () => {
+        this.setState({
+            loggedIn: false,
+            email: "",
+            password: ""
+        })
+        console.log("logout")
+        localStorage.setItem("loginStatus", false);
+        localStorage.removeItem("emaid_id");
+        localStorage.removeItem("password");
+    }
 
+    // Modal Submission
+
+    submitSalesModalForm = (e) => {
+        e.preventDefault();
+
+        let total = parseInt(document.getElementById('modalSoldInput').value);
+        let cash = parseInt(document.getElementById('modalCashInput').value);
+        let paytm = parseInt(document.getElementById('modalPaytmInput').value);
+
+        if(total === cash + paytm){
+            let uid = this.auth.currentUser.uid;
+
+            this.database.ref(`/salesdata/${uid}/`).update({
+                "soldTillDateCash": this.state.soldTillDateCash + cash,
+                "soldTillDatePaytm": this.state.soldTillDatePaytm + paytm
+            }).then(() => {
+                alert("Update Successful");
+            })
+        }
+        else {
+            alert("Cash + PayTm is not equal to the Total")
+        }
+    }
+
+    render() {
         return (
             <div>
                 <h1 style={titleStyle}>Sales Portal</h1>
@@ -136,7 +163,7 @@ export class Home extends Component {
                         <div className='box' style={boxStyle}>
                             <p style= {{fontSize: '1.75rem', fontWeight: '300'}}>Hii, <b>{this.state.name}</b></p>
                             <p style= {{fontSize: '1.2rem', fontWeight: '300', marginTop: '0.5rem'}}>
-                                <i className="fas fa-envelope-open-text" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> {this.state.emailid}
+                                <i className="fas fa-envelope-open-text" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> {this.state.email}
                             </p>
                             <p style= {{fontSize: '1.2rem', fontWeight: '300'}}>
                                 <i className="fas fa-users" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> Buddy Group : {this.state.buddygroup}
@@ -242,20 +269,20 @@ export class Home extends Component {
                             <button className="delete" onClick={this.cancelSalesModal} aria-label="close"></button>
                         </header>
                         <section className="modal-card-body">
-                            <form>
+                            <form onSubmit={this.submitSalesModalForm}>
                                 <div className='field'>
                                     <label className='label'>Add Copies Sold</label>
-                                    <input className='input' type='number' required placeholder='This will be added to the Total'></input>
+                                    <input className='input' id='modalSoldInput' type='number' required placeholder='This will be added to the Total'></input>
                                     
                                     <label className='label' style={{marginTop: '1rem'}}>
                                         <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> In Cash
                                     </label>
-                                    <input className='input' type='number' required placeholder='This will be added to the Total'></input>
+                                    <input className='input' id='modalCashInput' type='number' required placeholder='This will be added to the Total'></input>
                                     
                                     <label className='label' style={{marginTop: '1rem'}}>
                                         <i className="fas fa-credit-card" style={{ marginRight: '0.3rem' }}></i> In Paytm
                                     </label>
-                                    <input className='input' type='number' required placeholder='This will be added to the Total'></input>
+                                    <input className='input' id='modalPaytmInput' type='number' required placeholder='This will be added to the Total'></input>
 
                                 </div>
                                 <br></br>

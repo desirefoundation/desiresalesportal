@@ -27,8 +27,9 @@ export class Login extends Component {
                     this.setState({
                         loggedIn: true
                     })
+                    console.log("Login state changed to true")
 
-                    localStorage.setItem("loginStatus", "true")
+                    localStorage.setItem("loginStatus", true)
                     localStorage.setItem("email_id", email);
                     localStorage.setItem("password", password);
                 })
@@ -40,9 +41,8 @@ export class Login extends Component {
     }
 
     render() {
-        
         if(this.state.loggedIn){
-            return <Redirect to='/home' />
+            return <Redirect to="/home" />
         }
 
         return (
