@@ -1,5 +1,7 @@
 # Sales Portal for Desire Foundation
 
+[![pipeline status](https://gitlab.com/junaidrahim/salesdesireportal/badges/master/pipeline.svg)](https://gitlab.com/junaidrahim/salesdesireportal/commits/master)
+
 ## Inspiration
 
 This is a portal to log and manage the sales data of Desire Foundation. Previous method had a lot of intermediaries

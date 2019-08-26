@@ -75,7 +75,6 @@ export class Login extends Component {
                         </div>
                     </div>
                 </form>
-
             </div>
         )
     }
