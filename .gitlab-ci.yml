@@ -18,7 +18,7 @@ pages:
     - npm install # Install all dependencies
     - npm run build --prod # Build for prod
     - npm install -g firebase-tools
-    - firebase use desiresalesportal --token $FIREBASE_TOKEN
+    - firebase use desiresalesportal-9397a --token $FIREBASE_TOKEN
     - firebase deploy --token $FIREBASE_TOKEN
   only:
     - master # Only run on master branch
