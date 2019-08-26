@@ -1,0 +1,24 @@
+# Using the node alpine image to build the React app
+image: node:alpine
+
+# Cache node modules - speeds up future builds
+cache:
+  paths:
+  - node_modules
+
+# Name the stages involved in the pipeline
+stages:
+- deploy
+
+# Job name for gitlab to recognise this results in assets for Gitlab Pages
+# https://docs.gitlab.com/ee/user/project/pages/introduction.html#gitlab-pages-requirements
+pages:
+  stage: deploy
+  script:
+    - npm install # Install all dependencies
+    - npm run build --prod # Build for prod
+    - npm install -g firebase-tools
+    - firebase use desiresalesportal --token $FIREBASE_TOKEN
+    - firebase deploy --token $FIREBASE_TOKEN
+  only:
+    - master # Only run on master branch
