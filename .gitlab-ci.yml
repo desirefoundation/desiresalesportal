@@ -10,9 +10,7 @@ cache:
 stages:
 - deploy
 
-# Job name for gitlab to recognise this results in assets for Gitlab Pages
-# https://docs.gitlab.com/ee/user/project/pages/introduction.html#gitlab-pages-requirements
-pages:
+salesportal:
   stage: deploy
   script:
     - npm install # Install all dependencies
