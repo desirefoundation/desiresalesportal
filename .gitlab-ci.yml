@@ -19,7 +19,7 @@ build app:
   only:
     - master # Only run on master branch
 
-deploy on firebase:
+firebase:
   stage: deploy
   script:
     - npm install -g firebase-tools
