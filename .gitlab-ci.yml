@@ -8,13 +8,20 @@ cache:
 
 # Name the stages involved in the pipeline
 stages:
+- build
 - deploy
 
-salesportal:
-  stage: deploy
+build_app:
+  stage: build
   script:
     - npm install # Install all dependencies
     - npm run build --prod # Build for prod
+  only:
+    - master # Only run on master branch
+
+firebase_deploy:
+  stage: deploy
+  script:
     - npm install -g firebase-tools
     - firebase use desiresalesportal-9397a --token $FIREBASE_TOKEN
     - firebase deploy --token $FIREBASE_TOKEN
