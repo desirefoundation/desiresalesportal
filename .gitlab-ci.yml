@@ -11,7 +11,7 @@ stages:
 - build
 - deploy
 
-build_app:
+build app:
   stage: build
   script:
     - npm install # Install all dependencies
@@ -19,7 +19,7 @@ build_app:
   only:
     - master # Only run on master branch
 
-firebase_deploy:
+deploy on firebase:
   stage: deploy
   script:
     - npm install -g firebase-tools
