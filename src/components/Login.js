@@ -75,6 +75,9 @@ export class Login extends Component {
                         </div>
                     </div>
                 </form>
+                <div>
+                    <h1>Project by Junaid Rahim</h1>
+                </div>
             </div>
         )
     }
