@@ -1,6 +1,5 @@
 # Sales Portal for Desire Foundation
 
-[![pipeline status](https://gitlab.com/junaidrahim/salesdesireportal/badges/master/pipeline.svg)](https://gitlab.com/junaidrahim/salesdesireportal/commits/master)
 
 ## Inspiration
 
