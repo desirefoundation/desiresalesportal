@@ -74,9 +74,13 @@ export class Login extends Component {
                             <input type='submit' value='Login' className='button is-link' />
                         </div>
                     </div>
+                    <br></br>
+                    <br></br>
                 </form>
-                <div>
-                    <h1>Project by Junaid Rahim</h1>
+                <br></br>
+                <br></br>
+                <div style={{textAlign: 'center'}}>
+                    <p className="tag is-warning is-medium">A project by Junaid H Rahim</p>
                 </div>
             </div>
         )
