@@ -10,8 +10,7 @@ export class Home extends Component {
         "loggedIn": false,
         "password": "",
         "buddygroup": "",
-        "copiesTakenLot2": 0,
-        "copiesTakenLot1": 0,
+        "copiesTakenLot3": 0,
         "copyTransactions": [],
         "defective": 0,
         "email": "",
@@ -37,12 +36,19 @@ export class Home extends Component {
                         let sales_data = snapshot.val();
                         this.setState(sales_data);
 
-                        let e = document.getElementById("stockExchangedCopies");
+                        let stockExchangedCopiesSpan = document.getElementById("stockExchangedCopies");
                         let total = this.getTotalExchanged()
-                        e.innerHTML += `<b>${total.toString()}</b>`
+                        stockExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
                         
-                        let ee = document.getElementById("exchangeExchangedCopies")
-                        ee.innerHTML += `<b>${total.toString()}</b>  `
+                        let grossTotalspan = document.getElementById("stockGrossTotal")
+                        grossTotalspan.innerHTML = `<b>${this.getGrossTotal().toString()}</b>`
+                        
+                        let exchangeExchangedCopiesSpan = document.getElementById("exchangeExchangedCopies")
+                        exchangeExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
+
+                        let stockTotalCopiesInHandSpan = document.getElementById("stockTotalCopiesInHand");
+                        stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm - this.state.soldTillDateCash).toString();
+
                     });
                 })
                 .catch((error) => {
@@ -64,19 +70,26 @@ export class Home extends Component {
 
     }
 
+    // Functions to Cancel Modals
     cancelSalesModal = () => {
         let m = document.getElementById("salesDataModal");
         m.setAttribute("class","modal")
     }
     
-    activateSalesModal = () => {
-        let m = document.getElementById("salesDataModal");
-        m.setAttribute("class","modal is-active");
-    }
-
     cancelStockModal = () => {
         let m = document.getElementById("stockDataModal");
         m.setAttribute("class", "modal");
+    }
+    
+    cancelExchangeModal = () => {
+        let m = document.getElementById("exchangeDataModal");
+        m.setAttribute("class", "modal")
+    }
+    
+    // Functions to Activate Modals
+    activateSalesModal = () => {
+        let m = document.getElementById("salesDataModal");
+        m.setAttribute("class","modal is-active");
     }
 
     activateStockModal = () => {
@@ -84,10 +97,6 @@ export class Home extends Component {
         m.setAttribute("class", "modal is-active");
     }
 
-    cancelExchangeModal = () => {
-        let m = document.getElementById("exchangeDataModal");
-        m.setAttribute("class", "modal")
-    }
 
     activateExchangeModal = () => {
         let m = document.getElementById("exchangeDataModal");
@@ -98,7 +107,6 @@ export class Home extends Component {
     // Data Aggregator Functions
     getTotalExchanged = () => {
         let total = 0;
-
         let transactions_arr = this.state.copyTransactions;
 
         for(let i=0; i<transactions_arr.length; i++){
@@ -108,28 +116,13 @@ export class Home extends Component {
         return total;
     }
 
-    getGrossTotalCopies = () => {
-        let total;
-
-        total = this.copiesTakenLot1 + this.copiesTakenLot1 + this.getTotalExchanged() - this.state.defective
-
+    getGrossTotal = () => {
+        let total = this.state.copiesTakenLot3 - this.state.defective + this.getTotalExchanged()
         return total;
     }
 
-    startLogout = () => {
-        this.setState({
-            loggedIn: false,
-            email: "",
-            password: ""
-        })
-        console.log("logout")
-        localStorage.setItem("loginStatus", false);
-        localStorage.removeItem("emaid_id");
-        localStorage.removeItem("password");
-    }
 
-    // Modal Submission
-
+    // Modal Submission Functions
     submitSalesModalForm = (e) => {
         e.preventDefault();
 
@@ -145,20 +138,72 @@ export class Home extends Component {
                 "soldTillDatePaytm": this.state.soldTillDatePaytm + paytm
             }).then(() => {
                 alert("Update Successful");
+                this.cancelSalesModal();
+                document.location.reload()
             })
         }
         else {
-            alert("Cash + PayTm is not equal to the Total")
+            alert("Cash + PayTm is not equal to the Total");
         }
+    }
+    
+    submitStockModalForm = (e) => {
+        e.preventDefault();
+
+        let copiesLot3 = parseInt(document.getElementById("modalCopiesLot3Input").value);
+        let defective = parseInt(document.getElementById("modalDefectiveInput").value);
+        
+        let uid = this.auth.currentUser.uid;
+        
+        this.database.ref(`/salesdata/${uid}`).update({
+            "copiesTakenLot3": this.state.copiesTakenLot3 + copiesLot3,
+            "defective": this.state.defective + defective
+        }).then(() => {
+            alert("Update Successful");
+            this.cancelStockModal();
+            document.location.reload()
+        });
+    }
+
+    submitExchangeModal = (e) => {
+        e.preventDefault();
+
+        let name = document.getElementById("modalExchangeNameInput").value.toString();
+        let number = parseInt(document.getElementById("modalExhangeNumberInput").value);
+
+        let payload = {
+            "givenTo": name,
+            "amount": number
+        }
+
+        let copyTransactions = this.state.copyTransactions
+        copyTransactions.push(payload)
+        
+        console.log(copyTransactions);
+
+        let uid = this.auth.currentUser.uid;
+        
+        this.database.ref(`/salesdata/${uid}`).update({
+            "copyTransactions": copyTransactions
+        }).then(() => {
+            alert("Update Successful");
+            this.cancelExchangeModal();
+            document.location.reload()
+        })
+    
     }
 
     render() {
         return (
             <div>
+                {/*------- HEADER -----------*/}
                 <h1 style={titleStyle}>Sales Portal</h1>
                 <h3 style={subtitleStyle}>Desire Foundation</h3>
                 <br></br>
+
+                {/* ----------- TOP CARDS => (Name Email) & (Total Sold) ------------*/}
                 <div className='columns'  style={{ paddingLeft: '1rem', paddingRight: '1rem', margin: '0rem', marginBottom: '2rem'}}>
+                    {/* Name and Email*/}
                     <div className='column is-narrow'>
                         <div className='box' style={boxStyle}>
                             <p style= {{fontSize: '1.75rem', fontWeight: '300'}}>Hii, <b>{this.state.name}</b></p>
@@ -171,6 +216,7 @@ export class Home extends Component {
                         </div>
                     </div>
 
+                    {/* Total Sold*/}
                     <div className='column is-narrow'>
                         <div className='box' style={boxStyle}>
                             <h1 className='title' style={{color: '#d50000'}}>
@@ -185,8 +231,9 @@ export class Home extends Component {
                     </div>
                 </div>
 
+                {/*  SALES DATA        STOCK          EXCHANGED  */}
                 <div className='columns' style={{ paddingLeft: '1rem', paddingRight: '1rem', margin: '0rem' }}>
-
+                    {/* SALES DATA*/}
                     <div className='column'>
                         <div className='box'>
                             <h1 style={cardHeaderStyle}>
@@ -207,10 +254,10 @@ export class Home extends Component {
                             </p>
                             
                             <br></br>
-
                         </div>
                     </div>
 
+                    {/*   STOCK   */}
                     <div className='column'>
                         <div className='box'>
                             <h1 style={cardHeaderStyle}>
@@ -219,31 +266,32 @@ export class Home extends Component {
 
                             <br></br>
 
-                            <p style={notebookStatusStyle}>Copies taken in Lot 1 : <b>{this.state.copiesTakenLot1}</b>  </p>
-                            <p style={notebookStatusStyle}>Copies taken in Lot 2 : <b>{this.state.copiedTakenLot2}</b>  </p>
+                            <p style={notebookStatusStyle}>Copies taken in Lot 3 : <b>{this.state.copiesTakenLot3}</b>  </p>
                             <br></br>
-                            <p id="stockExchangedCopies" style={notebookStatusStyle}>Exchanged : </p>
+                            <p style={notebookStatusStyle}>Exchanged : <span id="stockExchangedCopies"></span></p>
                             <p style={notebookStatusStyle}>Defective : <b>{this.state.defective}</b>  </p>
                             <br></br>
-                            <p style={notebookStatusStyle}>Gross Total:  <b>80</b>  </p>
+                            <p style={notebookStatusStyle}>Gross Total : <b><span id="stockGrossTotal"></span></b></p>
                             <p style={notebookStatusStyle}>Total Copies Sold :  <b>{(this.state.soldTillDatePaytm + this.state.soldTillDateCash).toString()}</b>  </p>
-                            <p style={notebookStatusStyle}>Total Copies in Hand : <b>52</b>  </p>
+                            <p style={notebookStatusStyle}>Total Copies in Hand : <b><span id="stockTotalCopiesInHand"></span></b>  </p>
                         </div>
                     </div>
 
+                    {/*  EXCHANGES  */}
                     <div className='column'>
                         <div className='box'>
                             <h1 style={cardHeaderStyle}>
                                 <i className="fas fa-book-open" style={{ marginRight: '1rem'}}></i> Exchanged
                             </h1>
+                            <p style={{fontFamily: "'Heebo', sans-seirf", fontWeight: '300'}}>+ve if received, -ve if given away</p>
                             <br></br>
-                            <br></br>
-                            <p id="exchangeExchangedCopies" style={notebookExchangedStyle}>Total Exchanged : </p>
+                            <p style={notebookExchangedStyle}>Total Exchanged : <span id="exchangeExchangedCopies"></span></p>
                         </div>
                     </div>
                 </div>
                 <br></br>
 
+                {/* BUTTONS FOR MODALS */}
                 <div style={{ paddingLeft: '2rem', paddingRight: '2rem', margin: '0rem' }} className="columns">
                     <button className="button is-large is-danger" onClick={ this.activateSalesModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
                         Add Sales Data
@@ -260,7 +308,7 @@ export class Home extends Component {
 
                 <br></br>
                 
-
+                {/* Sales Data Modal */}
                 <div id="salesDataModal" className="modal">
                     <div className="modal-background"></div>
                     <div className="modal-card">
@@ -294,7 +342,7 @@ export class Home extends Component {
                 </div>
 
 
-
+                {/* STOCK DATA MODAL */}
                 <div id="stockDataModal" className="modal">
                     <div className="modal-background"></div>
                     <div className="modal-card">
@@ -303,15 +351,15 @@ export class Home extends Component {
                             <button className="delete" onClick={this.cancelStockModal} aria-label="close"></button>
                         </header>
                         <section className="modal-card-body">
-                            <form>
+                            <form onSubmit={this.submitStockModalForm}>
                                 <div className='field'>
-                                    <label className='label'>Copies Taken in Lot 2</label>
-                                    <input className='input' type='number' required placeholder='This will be added to the Total'></input>
+                                    <label className='label'>Copies Taken in Lot 3</label>
+                                    <input id="modalCopiesLot3Input" className='input' type='number' required placeholder='This will be added to the Total'></input>
                                     
                                     <label className='label' style={{marginTop: '1rem'}}>
                                         <i className="fas fa-window-close" style={{ marginRight: '0.3rem' }}></i> Defective
                                     </label>
-                                    <input className='input' type='number' required placeholder='This will be added to the Total'></input>
+                                    <input id="modalDefectiveInput" className='input' type='number' required placeholder='This will be added to the Total'></input>
 
                                 </div>
                                 <br></br>
@@ -324,7 +372,7 @@ export class Home extends Component {
 
 
 
-
+                {/* Exchange Data Modal */}
                 <div id="exchangeDataModal" className="modal">
                     <div className="modal-background"></div>
                     <div className="modal-card">
@@ -333,13 +381,13 @@ export class Home extends Component {
                             <button className="delete" onClick={this.cancelExchangeModal} aria-label="close"></button>
                         </header>
                         <section className="modal-card-body">
-                            <form>
+                            <form onSubmit={this.submitExchangeModal}>
                                 <div className='field'>
                                     <label className='label'>Exchanged With</label>
-                                    <input className='input' type='text' required placeholder='Name of the person'></input>
+                                    <input id="modalExchangeNameInput" className='input' type='text' required placeholder='Name of the person'></input>
                                     
                                     <label className='label' style={{marginTop: '1rem'}}>Number of Copies, + if taken, -ve if given</label>
-                                    <input className='input' type='number' required placeholder='This will be added to the Total'></input>
+                                    <input id="modalExhangeNumberInput" className='input' type='number' required placeholder='This will be added to the Total'></input>
 
                                 </div>
                                 <br></br>
@@ -349,6 +397,7 @@ export class Home extends Component {
                         <footer className="modal-card-foot"></footer>
                     </div>
                 </div>
+
             </div>
         )
     }
