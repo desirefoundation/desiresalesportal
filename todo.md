@@ -3,3 +3,4 @@
 - [x] Add functionality for the stock button
 - [x] Add functionality for the exchange button
 - [x] Remodel Database to Change the Lot1 Lot2 to Lot3
+- [ ] Add progressbars for home and login
