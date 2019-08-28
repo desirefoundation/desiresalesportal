@@ -1,5 +1,5 @@
 # Sales Portal for Desire Foundation
-
+[![Build Status](https://travis-ci.com/junaidrahim/desiresalesportal.svg?token=seCBmVPtCqy5qxSP1Vcf&branch=master)](https://travis-ci.com/junaidrahim/desiresalesportal)
 
 ## Inspiration
 
