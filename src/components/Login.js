@@ -46,7 +46,7 @@ export class Login extends Component {
         }
 
         return (
-            <div>
+            <div style={{padding: '1rem'}}>
                 <br></br>
                 <br></br>
                 <h1 className='title is-1' style={titleStyle}>SALES PORTAL</h1>
