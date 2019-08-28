@@ -13,5 +13,12 @@ The UI is developed in React. Bulma is used for CSS components
 
 available at https://desiresalesportal-9397a.firebaseapp.com/
 
+
+## LICENSE
+Copyright (c) **Junaid H Rahim**. All rights reserved.
+
+Licensed under the [MIT](LICENSE) License
+
+
 [![forthebadge](https://forthebadge.com/images/badges/fuck-it-ship-it.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
