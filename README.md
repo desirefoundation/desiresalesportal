@@ -1,5 +1,8 @@
 # Sales Portal for Desire Foundation
 
+[![Build Status](https://travis-ci.com/junaidrahim/desiresalesportal.svg?token=seCBmVPtCqy5qxSP1Vcf&branch=master)](https://travis-ci.com/junaidrahim/desiresalesportal)
+
+
 This is a portal to log and manage the sales data of [Desire Foundation](http://desirefoundation.org/). 
 Previous method had a lot of intermediaries and was prone to errors. 
 This project aims to streamline the data management process.
@@ -12,12 +15,10 @@ This project aims to streamline the data management process.
 
 live at https://desiresalesportal-9397a.firebaseapp.com/
 
-## Build Status
+## Workflow
+* Pull Requests and code for new features go in the `development` branch.
+* Pull Requests merged to `master` from `development` are built and deployed to production.
 
-Pull Requests and code for new features go in the `development` branch.
-Every commit pushed to `master` will be built and deployed to production.
-
-[![Build Status](https://travis-ci.com/junaidrahim/desiresalesportal.svg?token=seCBmVPtCqy5qxSP1Vcf&branch=master)](https://travis-ci.com/junaidrahim/desiresalesportal)
 
 ## LICENSE
 Copyright (c) **Junaid H Rahim**. All rights reserved.
