@@ -1,11 +1,19 @@
 # Sales Portal for Desire Foundation
 
-[![Build Status](https://travis-ci.com/junaidrahim/desiresalesportal.svg?token=seCBmVPtCqy5qxSP1Vcf&branch=master)](https://travis-ci.com/junaidrahim/desiresalesportal)
-
-
 This is a portal to log and manage the sales data of [Desire Foundation](http://desirefoundation.org/). 
 Previous method had a lot of intermediaries and was prone to errors. 
 This project aims to streamline the data management process.
+
+[![GitHub issues](https://img.shields.io/github/issues/junaidrahim/desiresalesportal?style=for-the-badge)](https://github.com/junaidrahim/desiresalesportal/issues)
+
+[![GitHub stars](https://img.shields.io/github/stars/junaidrahim/desiresalesportal?style=for-the-badge)](https://github.com/junaidrahim/desiresalesportal/stargazers)  
+[![GitHub forks](https://img.shields.io/github/forks/junaidrahim/desiresalesportal?style=for-the-badge)](https://github.com/junaidrahim/desiresalesportal/network)
+
+## Build Status
+
+[![Build Status](https://travis-ci.com/junaidrahim/desiresalesportal.svg?token=seCBmVPtCqy5qxSP1Vcf&branch=master)](https://travis-ci.com/junaidrahim/desiresalesportal)
+
+
 
 ## Tools Used
 
@@ -23,10 +31,8 @@ live at https://desiresalesportal-9397a.firebaseapp.com/
 ## LICENSE
 Copyright (c) **Junaid H Rahim**. All rights reserved.
 
-Licensed under the [MIT](LICENSE) License
+[![](https://img.shields.io/github/license/junaidrahim/desiresalesportal?style=for-the-badge)](LICENSE)
 
-<br>
 
-[![forthebadge](https://forthebadge.com/images/badges/fuck-it-ship-it.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
