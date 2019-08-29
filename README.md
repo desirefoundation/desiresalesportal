@@ -11,7 +11,7 @@ This project aims to streamline the data management process.
 
 ## Build Status
 
-[![Build Status](https://travis-ci.com/junaidrahim/desiresalesportal.svg?token=seCBmVPtCqy5qxSP1Vcf&branch=master)](https://travis-ci.com/junaidrahim/desiresalesportal)
+![Travis (.com)](https://img.shields.io/travis/com/junaidrahim/desiresalesportal?style=for-the-badge)
 
 
 
