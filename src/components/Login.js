@@ -23,12 +23,13 @@ export class Login extends Component {
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
                     // Login Successful
-                    // store login status and redirect to home
+                    // change login status = true
                     this.setState({
                         loggedIn: true
                     })
                     console.log("Login state changed to true")
 
+                    
                     localStorage.setItem("loginStatus", true)
                     localStorage.setItem("email_id", email);
                     localStorage.setItem("password", password);

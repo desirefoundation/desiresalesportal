@@ -25,13 +25,15 @@ export class Home extends Component {
         let loginStatus = localStorage.getItem("loginStatus");
         
         if(loginStatus){
+            // Logs in again and gets all the data of that user
             let email_id = localStorage.getItem("email_id");
             let pw = localStorage.getItem("password");
 
             this.auth.signInWithEmailAndPassword(email_id, pw)
                 .then(() => {
                     let uid = this.auth.currentUser.uid;
-
+                    
+                    // get the data and set the html
                     this.database.ref(`/salesdata/${uid}`).on('value', (snapshot) => {
                         let sales_data = snapshot.val();
                         this.setState(sales_data);
@@ -402,6 +404,8 @@ export class Home extends Component {
         )
     }
 }
+
+// Styles
 
 const titleStyle = {
     fontSize: '3.5rem',
