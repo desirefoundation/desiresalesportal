@@ -6,7 +6,7 @@ This project aims to streamline the data management process.
 
 ## Tools Used
 
-* All the database and authentication is handled by **Firebase**. 
+* The database and authentication is handled by **Firebase**. 
 * The UI is developed in **React**. 
 * **Bulma** is used for CSS components
 
