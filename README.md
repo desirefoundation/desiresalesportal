@@ -14,7 +14,8 @@ live at https://desiresalesportal-9397a.firebaseapp.com/
 
 ## Build Status
 
-Every commit pushed to master will be built and deployed.
+Pull Requests and code for new features go in the `development` branch.
+Every commit pushed to `master` will be built and deployed to production.
 
 [![Build Status](https://travis-ci.com/junaidrahim/desiresalesportal.svg?token=seCBmVPtCqy5qxSP1Vcf&branch=master)](https://travis-ci.com/junaidrahim/desiresalesportal)
 
