@@ -21,7 +21,7 @@ This project aims to streamline the data management process.
 * The UI is developed in **React**. 
 * **Bulma** is used for CSS components
 
-live at https://desiresalesportal-9397a.firebaseapp.com/
+live at https://desiresalesportal-60b40.firebaseapp.com
 
 ## Workflow
 * Pull Requests and code for new features go in the `development` branch.
