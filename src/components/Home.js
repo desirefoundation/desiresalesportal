@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Loader from 'react-loader-spinner'
 
 import firebaseapp from '../firebase'
 
@@ -17,7 +18,8 @@ export class Home extends Component {
         "name": "",
         "rollno": 0,
         "soldTillDateCash": 0,
-        "soldTillDatePaytm": 0
+        "soldTillDatePaytm": 0,
+        "spinnerLoading": true
     }
 
     constructor(){
@@ -37,7 +39,8 @@ export class Home extends Component {
                     this.database.ref(`/salesdata/${uid}`).on('value', (snapshot) => {
                         let sales_data = snapshot.val();
                         this.setState(sales_data);
-
+                        this.setState({spinnerLoading: false})
+                        
                         let stockExchangedCopiesSpan = document.getElementById("stockExchangedCopies");
                         let total = this.getTotalExchanged()
                         stockExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
@@ -54,6 +57,7 @@ export class Home extends Component {
                     });
                 })
                 .catch((error) => {
+                    this.setState({spinnerLoading: false});
                     alert(error.message);
                 });
 
@@ -173,6 +177,14 @@ export class Home extends Component {
         let name = document.getElementById("modalExchangeNameInput").value.toString();
         let number = parseInt(document.getElementById("modalExhangeNumberInput").value);
 
+        let givenRadioButton = document.getElementById("givenRadioButton")
+
+        if(givenRadioButton.checked){
+            number = -number
+            console.log("Given", number)
+        }
+            
+
         let payload = {
             "givenTo": name,
             "amount": number
@@ -231,6 +243,17 @@ export class Home extends Component {
                             
                         </div>
                     </div>
+
+                    <div className="column">
+                        <Loader
+                            type="Puff"
+                            color="#00BFFF"
+                            height={50}
+                            width={50}
+                            visible={this.state.spinnerLoading}
+                        />
+                    </div>
+
                 </div>
 
                 {/*  SALES DATA        STOCK          EXCHANGED  */}
@@ -285,7 +308,6 @@ export class Home extends Component {
                             <h1 style={cardHeaderStyle}>
                                 <i className="fas fa-book-open" style={{ marginRight: '1rem'}}></i> Exchanged
                             </h1>
-                            <p style={{fontFamily: "'Heebo', sans-seirf", fontWeight: '300'}}>+ve if received, -ve if given away</p>
                             <br></br>
                             <p style={notebookExchangedStyle}>Total Exchanged : <span id="exchangeExchangedCopies"></span></p>
                         </div>
@@ -385,11 +407,19 @@ export class Home extends Component {
                         <section className="modal-card-body">
                             <form onSubmit={this.submitExchangeModal}>
                                 <div className='field'>
-                                    <label className='label'>Exchanged With</label>
+                                    <label className='label'>Copies Exchanged With</label>
                                     <input id="modalExchangeNameInput" className='input' type='text' required placeholder='Name of the person'></input>
+                                    <br></br>
+
+                                    <div style={this.radioButtonStyle}>
+                                        <br></br>
+                                        <label className='label'>Type of Exchange</label>
+                                        <input type="radio" name="givenTaken" id="givenRadioButton"/> Given <br></br>
+                                        <input type="radio" name="givenTaken" id="takenRadioButton"/> Taken
+                                    </div>
                                     
-                                    <label className='label' style={{marginTop: '1rem'}}>Number of Copies, + if taken, -ve if given</label>
-                                    <input id="modalExhangeNumberInput" className='input' type='number' required placeholder='This will be added to the Total'></input>
+                                    <label className='label' style={{marginTop: '1rem'}}>Number of Copies</label>
+                                    <input id="modalExhangeNumberInput" className='input' type='number' min='0' required placeholder='Enter a Positive Number'></input>
 
                                 </div>
                                 <br></br>
@@ -450,5 +480,6 @@ const notebookExchangedStyle = {
     fontSize: '1.6rem',
     fontWeight: '300'
 }
+
 
 export default Home
