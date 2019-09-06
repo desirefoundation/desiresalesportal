@@ -177,6 +177,14 @@ export class Home extends Component {
         let name = document.getElementById("modalExchangeNameInput").value.toString();
         let number = parseInt(document.getElementById("modalExhangeNumberInput").value);
 
+        let givenRadioButton = document.getElementById("givenRadioButton")
+
+        if(givenRadioButton.checked){
+            number = -number
+            console.log("Given", number)
+        }
+            
+
         let payload = {
             "givenTo": name,
             "amount": number
@@ -300,7 +308,6 @@ export class Home extends Component {
                             <h1 style={cardHeaderStyle}>
                                 <i className="fas fa-book-open" style={{ marginRight: '1rem'}}></i> Exchanged
                             </h1>
-                            <p style={{fontFamily: "'Heebo', sans-seirf", fontWeight: '300'}}>+ve if received, -ve if given away</p>
                             <br></br>
                             <p style={notebookExchangedStyle}>Total Exchanged : <span id="exchangeExchangedCopies"></span></p>
                         </div>
@@ -400,11 +407,19 @@ export class Home extends Component {
                         <section className="modal-card-body">
                             <form onSubmit={this.submitExchangeModal}>
                                 <div className='field'>
-                                    <label className='label'>Exchanged With</label>
+                                    <label className='label'>Copies Exchanged With</label>
                                     <input id="modalExchangeNameInput" className='input' type='text' required placeholder='Name of the person'></input>
+                                    <br></br>
+
+                                    <div style={this.radioButtonStyle}>
+                                        <br></br>
+                                        <label className='label'>Type of Exchange</label>
+                                        <input type="radio" name="givenTaken" id="givenRadioButton"/> Given <br></br>
+                                        <input type="radio" name="givenTaken" id="takenRadioButton"/> Taken
+                                    </div>
                                     
-                                    <label className='label' style={{marginTop: '1rem'}}>Number of Copies, + if taken, -ve if given</label>
-                                    <input id="modalExhangeNumberInput" className='input' type='number' required placeholder='This will be added to the Total'></input>
+                                    <label className='label' style={{marginTop: '1rem'}}>Number of Copies</label>
+                                    <input id="modalExhangeNumberInput" className='input' type='number' min='0' required placeholder='Enter a Positive Number'></input>
 
                                 </div>
                                 <br></br>
@@ -465,5 +480,6 @@ const notebookExchangedStyle = {
     fontSize: '1.6rem',
     fontWeight: '300'
 }
+
 
 export default Home
