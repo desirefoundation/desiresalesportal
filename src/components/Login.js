@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
+import Loader from 'react-loader-spinner'
 
 import firebaseapp from '../firebase'
 
 export class Login extends Component {
 
     state = {
-        loggedIn: false
+        loggedIn: false,
+        spinnerLoading: false
     }
 
     submitForm = (e) => {
         e.preventDefault();
+        this.setState({spinnerLoading: true});
 
         let email = document.getElementById('emailInput').value.toString();
         let password = document.getElementById('passwordInput').value.toString();
@@ -27,8 +30,8 @@ export class Login extends Component {
                     this.setState({
                         loggedIn: true
                     })
-                    console.log("Login state changed to true")
-
+                    
+                    this.setState({spinnerLoading: false});
                     
                     localStorage.setItem("loginStatus", true)
                     localStorage.setItem("email_id", email);
@@ -36,6 +39,7 @@ export class Login extends Component {
                 })
                 .catch((error) => {
                     // tell the user about the error
+                    this.setState({spinnerLoading: false});
                     alert(error.message)
                 });
         }
@@ -78,9 +82,15 @@ export class Login extends Component {
                     <br></br>
                     <br></br>
                 </form>
-                <br></br>
-                <br></br>
                 <div style={{textAlign: 'center'}}>
+                    <Loader
+                        type="Puff"
+                        color="#00BFFF"
+                        height={50}
+                        width={50}
+                        visible={this.state.spinnerLoading}
+                    />
+                    <br></br>
                     <p className="tag is-warning is-medium">A project by Junaid H Rahim</p>
                 </div>
             </div>

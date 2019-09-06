@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Loader from 'react-loader-spinner'
 
 import firebaseapp from '../firebase'
 
@@ -17,7 +18,8 @@ export class Home extends Component {
         "name": "",
         "rollno": 0,
         "soldTillDateCash": 0,
-        "soldTillDatePaytm": 0
+        "soldTillDatePaytm": 0,
+        "spinnerLoading": true
     }
 
     constructor(){
@@ -37,7 +39,8 @@ export class Home extends Component {
                     this.database.ref(`/salesdata/${uid}`).on('value', (snapshot) => {
                         let sales_data = snapshot.val();
                         this.setState(sales_data);
-
+                        this.setState({spinnerLoading: false})
+                        
                         let stockExchangedCopiesSpan = document.getElementById("stockExchangedCopies");
                         let total = this.getTotalExchanged()
                         stockExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
@@ -54,6 +57,7 @@ export class Home extends Component {
                     });
                 })
                 .catch((error) => {
+                    this.setState({spinnerLoading: false});
                     alert(error.message);
                 });
 
@@ -231,6 +235,17 @@ export class Home extends Component {
                             
                         </div>
                     </div>
+
+                    <div className="column">
+                        <Loader
+                            type="Puff"
+                            color="#00BFFF"
+                            height={50}
+                            width={50}
+                            visible={this.state.spinnerLoading}
+                        />
+                    </div>
+
                 </div>
 
                 {/*  SALES DATA        STOCK          EXCHANGED  */}
