@@ -11,6 +11,9 @@ export class MyCustomers extends Component {
             let length = this.props.customerdata.length;
 
             for(let i=0; i<length; i++){
+                if(i === 0)
+                    continue
+
                 let tableContent = `
                 <tr>
                     <td>${this.props.customerdata[i].name}</td>
