@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import Loader from 'react-loader-spinner'
 
+import MyCustomers from './MyCustomers'
+
 import firebaseapp from '../firebase'
 
 export class Home extends Component {
     auth = firebaseapp.auth();
     database = firebaseapp.database();
-
+    
     state = {
         "loggedIn": false,
         "password": "",
@@ -19,7 +21,8 @@ export class Home extends Component {
         "rollno": 0,
         "soldTillDateCash": 0,
         "soldTillDatePaytm": 0,
-        "spinnerLoading": true
+        "spinnerLoading": true,
+        "customerdata": []
     }
 
     constructor(){
@@ -55,6 +58,13 @@ export class Home extends Component {
                         stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm - this.state.soldTillDateCash).toString();
 
                     });
+
+                    this.database.ref(`/customerdata/${uid}`).on('value', (snapshot) => {
+                        let customerdata = snapshot.val()
+                        this.setState({
+                            "customerdata": customerdata
+                        })
+                    });
                 })
                 .catch((error) => {
                     this.setState({spinnerLoading: false});
@@ -77,6 +87,12 @@ export class Home extends Component {
     }
 
     // Functions to Cancel Modals
+    cancelIndividualSaleModal = () => {
+        let m = document.getElementById("individualSaleModal")
+        m.setAttribute("class", "modal")
+        document.location.reload()
+    }
+    
     cancelSalesModal = () => {
         let m = document.getElementById("salesDataModal");
         m.setAttribute("class","modal")
@@ -93,6 +109,11 @@ export class Home extends Component {
     }
     
     // Functions to Activate Modals
+    activateIndividualSaleModal = () => {
+        let m = document.getElementById("individualSaleModal");
+        m.setAttribute("class","modal is-active");
+    }
+
     activateSalesModal = () => {
         let m = document.getElementById("salesDataModal");
         m.setAttribute("class","modal is-active");
@@ -129,6 +150,68 @@ export class Home extends Component {
 
 
     // Modal Submission Functions
+    submitIndividualSaleModal = (e) => {
+        e.preventDefault();
+        
+        let copiesSold = parseInt(document.getElementById("individualSaleSoldInput").value);
+        let paytmRadioButton = document.getElementById("paytmRadioButton");
+
+        let customer_name = document.getElementById("individualSaleNameInput").value;
+        let customer_email = document.getElementById("individualSaleEmailInput").value;
+
+        let mode = "cash"
+
+        if(paytmRadioButton.checked)
+            mode = "paytm"
+
+        let uid = this.auth.currentUser.uid;
+
+        if(mode === "cash"){
+            this.database.ref(`/salesdata/${uid}`).update({
+                "soldTillDateCash": this.state.soldTillDateCash + copiesSold
+            })
+            .then(() => {
+                let payload = {
+                    "name": customer_name,
+                    "email": customer_email,
+                    "copies_sold": copiesSold
+                }
+                
+                let final = this.state.customerdata
+                final.push(payload)
+                
+                this.database.ref(`/customerdata/${uid}`).set(final)
+                    .then(() => {
+                        alert("Update Successful");
+                    });
+            })
+            .catch(err => alert(err));
+        }
+        else {
+            this.database.ref(`/salesdata/${uid}`).update({
+                "soldTillDatePaytm": this.state.soldTillDatePaytm + copiesSold
+            })
+            .then(() => {
+                let payload = {
+                    "name": customer_name,
+                    "email": customer_email
+                }
+                
+                let final = this.state.customerdata
+                final.push(payload)
+                console.log(payload);
+
+                this.database.ref(`/customerdata/${uid}`).set(final)
+                    .then(() => {
+                        alert("Update Successful");
+                    });
+            })
+            .catch(err => alert(err));
+        }
+
+    }
+
+
     submitSalesModalForm = (e) => {
         e.preventDefault();
 
@@ -317,21 +400,67 @@ export class Home extends Component {
 
                 {/* BUTTONS FOR MODALS */}
                 <div style={{ paddingLeft: '2rem', paddingRight: '2rem', margin: '0rem' }} className="columns">
-                    <button className="button is-large is-danger" onClick={ this.activateSalesModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
+                    <button className="button is-medium is-link" onClick={ this.activateIndividualSaleModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
+                        Add Individual Sale
+                    </button>
+                    
+                    <button className="button is-medium is-danger" onClick={ this.activateSalesModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
                         Add Sales Data
                     </button>
                     
-                    <button className="button is-large is-info" onClick={ this.activateStockModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
+                    <button className="button is-medium is-info" onClick={ this.activateStockModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
                         Edit Stock Data
                     </button>
                     
-                    <button className="button is-large is-warning" onClick={ this.activateExchangeModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
+                    <button className="button is-medium is-warning" onClick={ this.activateExchangeModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
                         Add Exchange
                     </button>
                 </div>
 
                 <br></br>
+
+                <MyCustomers customerdata={this.state.customerdata}></MyCustomers>
+
+                <br></br>
                 
+                {/* Individual Sale Modal */}
+                <div id="individualSaleModal" className="modal">
+                    <div className="modal-background"></div>
+                    <div className="modal-card">
+                        <header className="modal-card-head">
+                            <p className="modal-card-title">Add Individual Sale</p>
+                            <button className="delete" onClick={this.cancelIndividualSaleModal} aria-label="close"></button>
+                        </header>
+                        <section className="modal-card-body">
+                            <form onSubmit={this.submitIndividualSaleModal}>
+                                <div className='field'>
+                                    <label className='label'>Copies Sold</label>
+                                    <input className='input' id='individualSaleSoldInput' type='number' min='0' required placeholder='This will be added to the total'></input>
+                                    
+                                    <div style={this.radioButtonStyle}>
+                                        <br></br>
+                                        <label className='label'>Mode of Payment</label>
+                                        <input type="radio" name="cashPaytm" id="cashRadioButton" defaultChecked/> Cash <br></br>
+                                        <input type="radio" name="cashPaytm" id="paytmRadioButton"/> Paytm
+                                    </div>
+                                    
+                                    <br></br>
+
+                                    <label className='label' style={{marginTop: '1rem'}}>Customer's Name</label>
+                                    <input className='input' id='individualSaleNameInput' type='text' required placeholder='Enter Name'></input>
+
+                                    <label className='label' style={{marginTop: '1rem'}}>Customer's Email (KIIT email preferred)</label>
+                                    <input className='input' id='individualSaleEmailInput' type='email' required placeholder='Enter Email'></input>
+                                    
+                                </div>
+                                <br></br>
+                                <input type='submit' className="button is-info" value="Update"></input>
+                            </form>
+                        </section>
+                        <footer className="modal-card-foot"></footer>
+                    </div>
+                </div>
+
                 {/* Sales Data Modal */}
                 <div id="salesDataModal" className="modal">
                     <div className="modal-background"></div>
@@ -446,7 +575,7 @@ const titleStyle = {
 }
 
 const subtitleStyle = {
-    fontSize: '1.5rem',
+    fontSize: '2.5rem',
     fontFamily: 'Heebo, sans-serif',
     marginLeft: '2rem',
     fontWeight: '300'
