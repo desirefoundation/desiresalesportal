@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import './customers.css'
+
 export class MyCustomers extends Component {
 
     fillTable = () => {
@@ -11,7 +13,6 @@ export class MyCustomers extends Component {
             for(let i=0; i<length; i++){
                 let tableContent = `
                 <tr>
-                    <td>${i+1}</td>
                     <td>${this.props.customerdata[i].name}</td>
                     <td>${this.props.customerdata[i].email}</td>
                     <td>${this.props.customerdata[i].copies_sold}</td>
@@ -27,13 +28,12 @@ export class MyCustomers extends Component {
     render() {
         return (
             <div onLoad={this.fillTable()}>
-                <h3 style={subtitleStyle}>My Customers</h3>
+                <h3 className="customerHeader">My Customers</h3>
                 <br></br>
-                <div>
-                    <table className="table is-bordered" style={{marginLeft: '2rem'}}>
+                <div className="tableContainer">
+                    <table className="table is-bordered column is-full">
                         <thead>
                             <tr>
-                                <th>Index</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Copies Sold</th>
@@ -49,13 +49,5 @@ export class MyCustomers extends Component {
     }
     
 }
-
-const subtitleStyle = {
-    fontSize: '2.5rem',
-    fontFamily: 'Heebo, sans-serif',
-    marginLeft: '2rem',
-    fontWeight: '300'
-}
-
 
 export default MyCustomers
