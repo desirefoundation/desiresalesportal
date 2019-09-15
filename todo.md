@@ -6,3 +6,8 @@
 - [x] Add progressbars for home and login
 - [x] Add progressbar on home as well
 - [x] Add given and taken for stock data
+
+- [ ] Admin Portal
+- [ ] Exchange Verifier
+- [x] Amount Paid to Coordinator
+- [x] Add feature of who the book was sold to (name and email) // important

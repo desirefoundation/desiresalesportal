@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import Loader from 'react-loader-spinner'
 
+import MyCustomers from './MyCustomers'
+
 import firebaseapp from '../firebase'
 
 export class Home extends Component {
     auth = firebaseapp.auth();
     database = firebaseapp.database();
-
+    
     state = {
         "loggedIn": false,
         "password": "",
@@ -19,7 +21,11 @@ export class Home extends Component {
         "rollno": 0,
         "soldTillDateCash": 0,
         "soldTillDatePaytm": 0,
-        "spinnerLoading": true
+        "spinnerLoading": true,
+        "amountPaidToCoordinator": 0,
+        "lastUpdated": "",
+        "users": {},
+        "customerdata": []
     }
 
     constructor(){
@@ -51,9 +57,45 @@ export class Home extends Component {
                         let exchangeExchangedCopiesSpan = document.getElementById("exchangeExchangedCopies")
                         exchangeExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
 
+                        let exchangeData = this.state.copyTransactions
+                        let exchangeTable = document.getElementById("exchangeTable");
+                        
+                        exchangeTable.innerHTML = ""
+                        
+                        for(let i=1; i<exchangeData.length; i++){
+                            let exchangeStatus = "given"
+
+                            if(exchangeData[i].amount > 0) {
+                                exchangeStatus = "taken"
+                            }
+
+                            let d = `
+                            <tr>
+                                <td>${exchangeData[i].givenTo}</td>
+                                <td>${Math.abs(exchangeData[i].amount)}</td>
+                                <td>${exchangeStatus}</td>
+                            </tr>`
+
+                            exchangeTable.innerHTML += d
+                        }
+
                         let stockTotalCopiesInHandSpan = document.getElementById("stockTotalCopiesInHand");
                         stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm - this.state.soldTillDateCash).toString();
 
+                    });
+
+                    this.database.ref(`/customerdata/${uid}`).on('value', (snapshot) => {
+                        let customerdata = snapshot.val()
+                        this.setState({
+                            "customerdata": customerdata
+                        })
+                    });
+
+                    this.database.ref(`/users/`).on('value', (snapshot) => {
+                        let users = snapshot.val()
+                        this.setState({
+                            "users": users
+                        })
                     });
                 })
                 .catch((error) => {
@@ -77,6 +119,12 @@ export class Home extends Component {
     }
 
     // Functions to Cancel Modals
+    cancelIndividualSaleModal = () => {
+        let m = document.getElementById("individualSaleModal")
+        m.setAttribute("class", "modal")
+        document.location.reload()
+    }
+    
     cancelSalesModal = () => {
         let m = document.getElementById("salesDataModal");
         m.setAttribute("class","modal")
@@ -93,6 +141,11 @@ export class Home extends Component {
     }
     
     // Functions to Activate Modals
+    activateIndividualSaleModal = () => {
+        let m = document.getElementById("individualSaleModal");
+        m.setAttribute("class","modal is-active");
+    }
+
     activateSalesModal = () => {
         let m = document.getElementById("salesDataModal");
         m.setAttribute("class","modal is-active");
@@ -127,8 +180,98 @@ export class Home extends Component {
         return total;
     }
 
+    // To update the last updated property
+    updateLastUpdated = () => {
+        let uid = this.auth.currentUser.uid;
+
+        this.database.ref(`/salesdata/${uid}`).update({
+            "lastUpdated": new Date().toString()
+        }).catch(err => console.log(err));
+    }
+
 
     // Modal Submission Functions
+
+    updateAmountPaidToCoordinator = (e) => {
+        e.preventDefault();
+        let amount = document.getElementById("amountPaidToCoordinatorInput").value;
+        
+        let uid = this.auth.currentUser.uid;
+
+        this.database.ref(`/salesdata/${uid}`).update({
+            "amountPaidToCoordinator": amount
+        }).then(() => {
+            alert("Updated");
+        }).catch(err => console.log(err));
+
+        this.updateLastUpdated()
+
+    }
+
+    submitIndividualSaleModal = (e) => {
+        e.preventDefault();
+        
+        let copiesSold = parseInt(document.getElementById("individualSaleSoldInput").value);
+        let paytmRadioButton = document.getElementById("paytmRadioButton");
+
+        let customer_name = document.getElementById("individualSaleNameInput").value;
+        let customer_email = document.getElementById("individualSaleEmailInput").value;
+
+        let mode = "cash"
+
+        if(paytmRadioButton.checked)
+            mode = "paytm"
+
+        let uid = this.auth.currentUser.uid;
+
+        if(mode === "cash"){
+            this.database.ref(`/salesdata/${uid}`).update({
+                "soldTillDateCash": this.state.soldTillDateCash + copiesSold
+            })
+            .then(() => {
+                let payload = {
+                    "name": customer_name,
+                    "email": customer_email,
+                    "copies_sold": copiesSold
+                }
+                
+                let final = this.state.customerdata
+                final.push(payload)
+                
+                this.database.ref(`/customerdata/${uid}`).set(final)
+                    .then(() => {
+                        alert("Update Successful");
+                    });
+            })
+            .catch(err => alert(err));
+        }
+        else {
+            this.database.ref(`/salesdata/${uid}`).update({
+                "soldTillDatePaytm": this.state.soldTillDatePaytm + copiesSold
+            })
+            .then(() => {
+                let payload = {
+                    "name": customer_name,
+                    "email": customer_email
+                }
+                
+                let final = this.state.customerdata
+                final.push(payload)
+                console.log(payload);
+
+                this.database.ref(`/customerdata/${uid}`).set(final)
+                    .then(() => {
+                        alert("Update Successful");
+                    });
+            })
+            .catch(err => alert(err));
+        }
+
+        this.updateLastUpdated()
+
+    }
+
+
     submitSalesModalForm = (e) => {
         e.preventDefault();
 
@@ -146,11 +289,13 @@ export class Home extends Component {
                 alert("Update Successful");
                 this.cancelSalesModal();
                 document.location.reload()
-            })
+            }).catch(err => console.log(err));
         }
         else {
             alert("Cash + PayTm is not equal to the Total");
         }
+
+        this.updateLastUpdated()
     }
     
     submitStockModalForm = (e) => {
@@ -168,43 +313,98 @@ export class Home extends Component {
             alert("Update Successful");
             this.cancelStockModal();
             document.location.reload()
-        });
+        }).catch(err => console.log(err));
+
+        this.updateLastUpdated()
     }
+
+
+    filterNames = (e) => {
+        e.preventDefault();
+        let nameInput = document.getElementById("exchangeModalNameInput").value.toString();
+        let dropdown = document.getElementById("exchangeModalNameDropdown");
+
+        let uid_list = Object.keys(this.state.users);
+
+        dropdown.innerHTML = ""
+
+        uid_list.forEach(i => {
+            if(this.state.users[i].name.search(nameInput.toUpperCase()) !== -1){
+                if(this.state.users[i].name == this.state.name)
+                    return;
+
+                let dropdown_html = `<button onclick="document.getElementById('exchangeModalNameInput').value ='${this.state.users[i].name.toString()}'; return false;" class='button' style='margin: 0.2rem'>
+                    ${this.state.users[i].name}
+                </button>`
+                
+                dropdown.innerHTML += dropdown_html;
+            }
+        })
+    }
+
 
     submitExchangeModal = (e) => {
         e.preventDefault();
 
-        let name = document.getElementById("modalExchangeNameInput").value.toString();
+        let name = document.getElementById("exchangeModalNameInput").value.toString();
         let number = parseInt(document.getElementById("modalExhangeNumberInput").value);
 
         let givenRadioButton = document.getElementById("givenRadioButton")
 
         if(givenRadioButton.checked){
             number = -number
-            console.log("Given", number)
         }
             
-
         let payload = {
             "givenTo": name,
             "amount": number
         }
+        
+        let payload_other = {
+            "givenTo": this.state.users[this.auth.currentUser.uid].name,
+            "amount": -number
+        }
 
+    
+        // obtain uid from name
+        let other_uid = "";
+        let keys = Object.keys(this.state.users);
+
+        keys.forEach(k => {
+            if(this.state.users[k].name === name){
+                other_uid = k;
+            }
+        })  
+    
+        // Own copy transactions
         let copyTransactions = this.state.copyTransactions
         copyTransactions.push(payload)
         
-        console.log(copyTransactions);
-
         let uid = this.auth.currentUser.uid;
         
         this.database.ref(`/salesdata/${uid}`).update({
             "copyTransactions": copyTransactions
         }).then(() => {
-            alert("Update Successful");
-            this.cancelExchangeModal();
-            document.location.reload()
-        })
+            this.database.ref(`/salesdata/${other_uid}/copyTransactions`).once('value')
+                .then((snapshot) => {
+                    let other_copyTransactions = snapshot.val()
+                    other_copyTransactions.push(payload_other);
+                    
+                    console.log(other_copyTransactions);
+                    
+                    this.database.ref(`/salesdata/${other_uid}`).update({
+                        "copyTransactions": other_copyTransactions
+                    }).then(() => {
+                        alert("Update Successful");
+                        this.cancelExchangeModal();
+                        document.location.reload()
+                        this.updateLastUpdated()
+                    })
     
+                });
+            
+            
+        })
     }
 
     render() {
@@ -244,6 +444,26 @@ export class Home extends Component {
                         </div>
                     </div>
 
+                    {/* Amount Paid to Coordinator*/}
+                    <div className='column is-narrow'>
+                        <div className='box' style={boxStyle}>
+                            <h1 className='title' style={{fontWeight: '300'}}>
+                                <i className="fas fa-funnel-dollar"></i> Amount Paid to Coordinator
+                            </h1>
+
+                            <h1 className='title' style={{fontWeight: '300'}}>
+                                ₹ {this.state.amountPaidToCoordinator.toString()} /-
+                            </h1>
+
+                            <form onSubmit={this.updateAmountPaidToCoordinator}>
+                                <input id="amountPaidToCoordinatorInput" required type="number" min="0" className='input' placeholder="Enter Amount" style={{width:'60%', marginRight:'1rem'}}></input>
+                                <input type="submit" value="Update" className="button"/>
+                            </form>
+                            
+                        </div>
+                    </div>
+                    
+                    {/* Loader */}
                     <div className="column">
                         <Loader
                             type="Puff"
@@ -310,6 +530,19 @@ export class Home extends Component {
                             </h1>
                             <br></br>
                             <p style={notebookExchangedStyle}>Total Exchanged : <span id="exchangeExchangedCopies"></span></p>
+
+                            <br></br>
+                            <div>
+                                <table className="table is-bordered">
+                                    <thead>
+                                        <th>Name</th>
+                                        <th>No.</th>
+                                        <th>Status</th>
+                                    </thead>
+
+                                    <tbody id="exchangeTable"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -317,21 +550,67 @@ export class Home extends Component {
 
                 {/* BUTTONS FOR MODALS */}
                 <div style={{ paddingLeft: '2rem', paddingRight: '2rem', margin: '0rem' }} className="columns">
-                    <button className="button is-large is-danger" onClick={ this.activateSalesModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
+                    <button className="button is-medium is-link" onClick={ this.activateIndividualSaleModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
+                        Add Individual Sale
+                    </button>
+                    
+                    <button className="button is-medium is-danger" onClick={ this.activateSalesModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
                         Add Sales Data
                     </button>
                     
-                    <button className="button is-large is-info" onClick={ this.activateStockModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
+                    <button className="button is-medium is-info" onClick={ this.activateStockModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
                         Edit Stock Data
                     </button>
                     
-                    <button className="button is-large is-warning" onClick={ this.activateExchangeModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
+                    <button className="button is-medium is-warning" onClick={ this.activateExchangeModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
                         Add Exchange
                     </button>
                 </div>
 
                 <br></br>
+
+                <MyCustomers customerdata={this.state.customerdata}></MyCustomers>
+
+                <br></br>
                 
+                {/* Individual Sale Modal */}
+                <div id="individualSaleModal" className="modal">
+                    <div className="modal-background"></div>
+                    <div className="modal-card">
+                        <header className="modal-card-head">
+                            <p className="modal-card-title">Add Individual Sale</p>
+                            <button className="delete" onClick={this.cancelIndividualSaleModal} aria-label="close"></button>
+                        </header>
+                        <section className="modal-card-body">
+                            <form onSubmit={this.submitIndividualSaleModal}>
+                                <div className='field'>
+                                    <label className='label'>Copies Sold</label>
+                                    <input className='input' id='individualSaleSoldInput' type='number' min='0' required placeholder='This will be added to the total'></input>
+                                    
+                                    <div style={this.radioButtonStyle}>
+                                        <br></br>
+                                        <label className='label'>Mode of Payment</label>
+                                        <input type="radio" name="cashPaytm" id="cashRadioButton" defaultChecked/> Cash <br></br>
+                                        <input type="radio" name="cashPaytm" id="paytmRadioButton"/> Paytm
+                                    </div>
+                                    
+                                    <br></br>
+
+                                    <label className='label' style={{marginTop: '1rem'}}>Customer's Name</label>
+                                    <input className='input' id='individualSaleNameInput' type='text' required placeholder='Enter Name'></input>
+
+                                    <label className='label' style={{marginTop: '1rem'}}>Customer's Email (KIIT email preferred)</label>
+                                    <input className='input' id='individualSaleEmailInput' type='email' required placeholder='Enter Email'></input>
+                                    
+                                </div>
+                                <br></br>
+                                <input type='submit' className="button is-info" value="Update"></input>
+                            </form>
+                        </section>
+                        <footer className="modal-card-foot"></footer>
+                    </div>
+                </div>
+
                 {/* Sales Data Modal */}
                 <div id="salesDataModal" className="modal">
                     <div className="modal-background"></div>
@@ -408,7 +687,12 @@ export class Home extends Component {
                             <form onSubmit={this.submitExchangeModal}>
                                 <div className='field'>
                                     <label className='label'>Copies Exchanged With</label>
-                                    <input id="modalExchangeNameInput" className='input' type='text' required placeholder='Name of the person'></input>
+                                    <input type="text" className="input" id="exchangeModalNameInput" onKeyUp={this.filterNames}></input>
+                                    
+                                    <div id="exchangeModalNameDropdown" style={{padding: '0.5rem'}}>
+                                        
+                                    </div>
+                                    
                                     <br></br>
 
                                     <div style={this.radioButtonStyle}>
@@ -446,7 +730,7 @@ const titleStyle = {
 }
 
 const subtitleStyle = {
-    fontSize: '1.5rem',
+    fontSize: '2.5rem',
     fontFamily: 'Heebo, sans-serif',
     marginLeft: '2rem',
     fontWeight: '300'
