@@ -9,6 +9,8 @@ export class MyCustomers extends Component {
             let t = document.getElementById("tableBody");
             
             let length = this.props.customerdata.length;
+            
+            t.innerHTML = ""
 
             for(let i=0; i<length; i++){
                 if(i === 0)

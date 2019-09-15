@@ -24,6 +24,7 @@ export class Home extends Component {
         "spinnerLoading": true,
         "amountPaidToCoordinator": 0,
         "lastUpdated": "",
+        "users": {},
         "customerdata": []
     }
 
@@ -56,6 +57,28 @@ export class Home extends Component {
                         let exchangeExchangedCopiesSpan = document.getElementById("exchangeExchangedCopies")
                         exchangeExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
 
+                        let exchangeData = this.state.copyTransactions
+                        let exchangeTable = document.getElementById("exchangeTable");
+                        
+                        exchangeTable.innerHTML = ""
+                        
+                        for(let i=1; i<exchangeData.length; i++){
+                            let exchangeStatus = "given"
+
+                            if(exchangeData[i].amount > 0) {
+                                exchangeStatus = "taken"
+                            }
+
+                            let d = `
+                            <tr>
+                                <td>${exchangeData[i].givenTo}</td>
+                                <td>${Math.abs(exchangeData[i].amount)}</td>
+                                <td>${exchangeStatus}</td>
+                            </tr>`
+
+                            exchangeTable.innerHTML += d
+                        }
+
                         let stockTotalCopiesInHandSpan = document.getElementById("stockTotalCopiesInHand");
                         stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm - this.state.soldTillDateCash).toString();
 
@@ -65,6 +88,13 @@ export class Home extends Component {
                         let customerdata = snapshot.val()
                         this.setState({
                             "customerdata": customerdata
+                        })
+                    });
+
+                    this.database.ref(`/users/`).on('value', (snapshot) => {
+                        let users = snapshot.val()
+                        this.setState({
+                            "users": users
                         })
                     });
                 })
@@ -288,42 +318,93 @@ export class Home extends Component {
         this.updateLastUpdated()
     }
 
+
+    filterNames = (e) => {
+        e.preventDefault();
+        let nameInput = document.getElementById("exchangeModalNameInput").value.toString();
+        let dropdown = document.getElementById("exchangeModalNameDropdown");
+
+        let uid_list = Object.keys(this.state.users);
+
+        dropdown.innerHTML = ""
+
+        uid_list.forEach(i => {
+            if(this.state.users[i].name.search(nameInput.toUpperCase()) !== -1){
+                if(this.state.users[i].name == this.state.name)
+                    return;
+
+                let dropdown_html = `<button onclick="document.getElementById('exchangeModalNameInput').value ='${this.state.users[i].name.toString()}'; return false;" class='button' style='margin: 0.2rem'>
+                    ${this.state.users[i].name}
+                </button>`
+                
+                dropdown.innerHTML += dropdown_html;
+            }
+        })
+    }
+
+
     submitExchangeModal = (e) => {
         e.preventDefault();
 
-        let name = document.getElementById("modalExchangeNameInput").value.toString();
+        let name = document.getElementById("exchangeModalNameInput").value.toString();
         let number = parseInt(document.getElementById("modalExhangeNumberInput").value);
 
         let givenRadioButton = document.getElementById("givenRadioButton")
 
         if(givenRadioButton.checked){
             number = -number
-            console.log("Given", number)
         }
             
-
         let payload = {
             "givenTo": name,
             "amount": number
         }
+        
+        let payload_other = {
+            "givenTo": this.state.users[this.auth.currentUser.uid].name,
+            "amount": -number
+        }
 
+    
+        // obtain uid from name
+        let other_uid = "";
+        let keys = Object.keys(this.state.users);
+
+        keys.forEach(k => {
+            if(this.state.users[k].name === name){
+                other_uid = k;
+            }
+        })  
+    
+        // Own copy transactions
         let copyTransactions = this.state.copyTransactions
         copyTransactions.push(payload)
         
-        console.log(copyTransactions);
-
         let uid = this.auth.currentUser.uid;
         
         this.database.ref(`/salesdata/${uid}`).update({
             "copyTransactions": copyTransactions
         }).then(() => {
-            alert("Update Successful");
-            this.cancelExchangeModal();
-            document.location.reload()
-        })
-
-        this.updateLastUpdated()
+            this.database.ref(`/salesdata/${other_uid}/copyTransactions`).once('value')
+                .then((snapshot) => {
+                    let other_copyTransactions = snapshot.val()
+                    other_copyTransactions.push(payload_other);
+                    
+                    console.log(other_copyTransactions);
+                    
+                    this.database.ref(`/salesdata/${other_uid}`).update({
+                        "copyTransactions": other_copyTransactions
+                    }).then(() => {
+                        alert("Update Successful");
+                        this.cancelExchangeModal();
+                        document.location.reload()
+                        this.updateLastUpdated()
+                    })
     
+                });
+            
+            
+        })
     }
 
     render() {
@@ -449,6 +530,19 @@ export class Home extends Component {
                             </h1>
                             <br></br>
                             <p style={notebookExchangedStyle}>Total Exchanged : <span id="exchangeExchangedCopies"></span></p>
+
+                            <br></br>
+                            <div>
+                                <table className="table is-bordered">
+                                    <thead>
+                                        <th>Name</th>
+                                        <th>No.</th>
+                                        <th>Status</th>
+                                    </thead>
+
+                                    <tbody id="exchangeTable"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -593,7 +687,12 @@ export class Home extends Component {
                             <form onSubmit={this.submitExchangeModal}>
                                 <div className='field'>
                                     <label className='label'>Copies Exchanged With</label>
-                                    <input id="modalExchangeNameInput" className='input' type='text' required placeholder='Name of the person'></input>
+                                    <input type="text" className="input" id="exchangeModalNameInput" onKeyUp={this.filterNames}></input>
+                                    
+                                    <div id="exchangeModalNameDropdown" style={{padding: '0.5rem'}}>
+                                        
+                                    </div>
+                                    
                                     <br></br>
 
                                     <div style={this.radioButtonStyle}>
