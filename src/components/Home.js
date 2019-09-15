@@ -47,6 +47,7 @@ export class Home extends Component {
                         this.setState(sales_data);
                         this.setState({spinnerLoading: false})
                         
+                        // set HTML of Stock
                         let stockExchangedCopiesSpan = document.getElementById("stockExchangedCopies");
                         let total = this.getTotalExchanged()
                         stockExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
@@ -54,6 +55,11 @@ export class Home extends Component {
                         let grossTotalspan = document.getElementById("stockGrossTotal")
                         grossTotalspan.innerHTML = `<b>${this.getGrossTotal().toString()}</b>`
                         
+                        let stockTotalCopiesInHandSpan = document.getElementById("stockTotalCopiesInHand");
+                        stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm - this.state.soldTillDateCash).toString();
+
+
+                        // Set HTML of Exchanged
                         let exchangeExchangedCopiesSpan = document.getElementById("exchangeExchangedCopies")
                         exchangeExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
 
@@ -79,11 +85,10 @@ export class Home extends Component {
                             exchangeTable.innerHTML += d
                         }
 
-                        let stockTotalCopiesInHandSpan = document.getElementById("stockTotalCopiesInHand");
-                        stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm - this.state.soldTillDateCash).toString();
 
                     });
-
+                    
+                    // Get the customer data 
                     this.database.ref(`/customerdata/${uid}`).on('value', (snapshot) => {
                         let customerdata = snapshot.val()
                         this.setState({
@@ -91,6 +96,7 @@ export class Home extends Component {
                         })
                     });
 
+                    // get a list of all the users for Exchange search
                     this.database.ref(`/users/`).on('value', (snapshot) => {
                         let users = snapshot.val()
                         this.setState({
@@ -177,7 +183,7 @@ export class Home extends Component {
 
         this.database.ref(`/salesdata/${uid}`).update({
             "lastUpdated": new Date().toString()
-        }).catch(err => console.log(err));
+        }).catch(err => alert(err));
     }
 
 
@@ -193,7 +199,7 @@ export class Home extends Component {
             "amountPaidToCoordinator": amount
         }).then(() => {
             alert("Updated");
-        }).catch(err => console.log(err));
+        }).catch(err => alert(err));
 
         this.updateLastUpdated()
 
@@ -249,7 +255,6 @@ export class Home extends Component {
                 
                 let final = this.state.customerdata
                 final.push(payload)
-                console.log(payload);
 
                 this.database.ref(`/customerdata/${uid}`).set(final)
                     .then(() => {
@@ -279,12 +284,12 @@ export class Home extends Component {
             alert("Update Successful");
             this.cancelStockModal();
             document.location.reload()
-        }).catch(err => console.log(err));
+        }).catch(err => alert(err));
 
         this.updateLastUpdated()
     }
 
-
+    // Filter names for search in Exchange Modal
     filterNames = (e) => {
         e.preventDefault();
         let nameInput = document.getElementById("exchangeModalNameInput").value.toString();
@@ -320,12 +325,14 @@ export class Home extends Component {
         if(givenRadioButton.checked){
             number = -number
         }
-            
+          
+        // payload of self
         let payload = {
             "givenTo": name,
             "amount": number
         }
         
+        // payload of the other person copies were exchanged with
         let payload_other = {
             "givenTo": this.state.users[this.auth.currentUser.uid].name,
             "amount": -number
@@ -342,7 +349,7 @@ export class Home extends Component {
             }
         })  
     
-        // Own copy transactions
+        // Own copy transactions then other copy transactions
         let copyTransactions = this.state.copyTransactions
         copyTransactions.push(payload)
         
@@ -353,10 +360,10 @@ export class Home extends Component {
         }).then(() => {
             this.database.ref(`/salesdata/${other_uid}/copyTransactions`).once('value')
                 .then((snapshot) => {
+                    // Fetch other person's transactions, edit them and push them 
+
                     let other_copyTransactions = snapshot.val()
                     other_copyTransactions.push(payload_other);
-                    
-                    console.log(other_copyTransactions);
                     
                     this.database.ref(`/salesdata/${other_uid}`).update({
                         "copyTransactions": other_copyTransactions
@@ -368,9 +375,7 @@ export class Home extends Component {
                     })
     
                 });
-            
-            
-        })
+        });
     }
 
     render() {
