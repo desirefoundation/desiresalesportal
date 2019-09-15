@@ -330,7 +330,7 @@ export class Home extends Component {
 
         uid_list.forEach(i => {
             if(this.state.users[i].name.search(nameInput.toUpperCase()) !== -1){
-                if(this.state.users[i].name == this.state.name)
+                if(this.state.users[i].name === this.state.name)
                     return;
 
                 let dropdown_html = `<button onclick="document.getElementById('exchangeModalNameInput').value ='${this.state.users[i].name.toString()}'; return false;" class='button' style='margin: 0.2rem'>
