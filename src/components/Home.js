@@ -265,7 +265,6 @@ export class Home extends Component {
         }
 
         this.updateLastUpdated()
-
     }
 
     
