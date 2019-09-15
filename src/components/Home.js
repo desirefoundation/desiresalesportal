@@ -383,10 +383,24 @@ export class Home extends Component {
                 {/*------- HEADER -----------*/}
                 <h1 style={titleStyle}>Sales Portal</h1>
                 <h3 style={subtitleStyle}>Desire Foundation</h3>
-                <br></br>
+                
+                <hr style={{color: 'black'}}></hr>
 
                 {/* ----------- TOP CARDS => (Name Email) & (Total Sold) ------------*/}
                 <div className='columns'  style={{ paddingLeft: '1rem', paddingRight: '1rem', margin: '0rem', marginBottom: '2rem'}}>
+                    
+                    {/* Loader */}
+                    <div style={{paddingTop: '1rem'}}>
+                        <Loader
+                            type="Puff"
+                            color="#00BFFF"
+                            height={50}
+                            width={50}
+                            visible={this.state.spinnerLoading}
+                        />
+                    </div>
+
+
                     {/* Name and Email*/}
                     <div className='column is-narrow'>
                         <div className='box' style={boxStyle}>
@@ -431,17 +445,6 @@ export class Home extends Component {
                             </form>
                             
                         </div>
-                    </div>
-                    
-                    {/* Loader */}
-                    <div className="column">
-                        <Loader
-                            type="Puff"
-                            color="#00BFFF"
-                            height={50}
-                            width={50}
-                            visible={this.state.spinnerLoading}
-                        />
                     </div>
 
                 </div>
