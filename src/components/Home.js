@@ -125,11 +125,6 @@ export class Home extends Component {
         document.location.reload()
     }
     
-    cancelSalesModal = () => {
-        let m = document.getElementById("salesDataModal");
-        m.setAttribute("class","modal")
-    }
-    
     cancelStockModal = () => {
         let m = document.getElementById("stockDataModal");
         m.setAttribute("class", "modal");
@@ -146,10 +141,6 @@ export class Home extends Component {
         m.setAttribute("class","modal is-active");
     }
 
-    activateSalesModal = () => {
-        let m = document.getElementById("salesDataModal");
-        m.setAttribute("class","modal is-active");
-    }
 
     activateStockModal = () => {
         let m = document.getElementById("stockDataModal");
@@ -252,7 +243,8 @@ export class Home extends Component {
             .then(() => {
                 let payload = {
                     "name": customer_name,
-                    "email": customer_email
+                    "email": customer_email,
+                    "copies_sold": copiesSold
                 }
                 
                 let final = this.state.customerdata
@@ -271,32 +263,6 @@ export class Home extends Component {
 
     }
 
-
-    submitSalesModalForm = (e) => {
-        e.preventDefault();
-
-        let total = parseInt(document.getElementById('modalSoldInput').value);
-        let cash = parseInt(document.getElementById('modalCashInput').value);
-        let paytm = parseInt(document.getElementById('modalPaytmInput').value);
-
-        if(total === cash + paytm){
-            let uid = this.auth.currentUser.uid;
-
-            this.database.ref(`/salesdata/${uid}/`).update({
-                "soldTillDateCash": this.state.soldTillDateCash + cash,
-                "soldTillDatePaytm": this.state.soldTillDatePaytm + paytm
-            }).then(() => {
-                alert("Update Successful");
-                this.cancelSalesModal();
-                document.location.reload()
-            }).catch(err => console.log(err));
-        }
-        else {
-            alert("Cash + PayTm is not equal to the Total");
-        }
-
-        this.updateLastUpdated()
-    }
     
     submitStockModalForm = (e) => {
         e.preventDefault();
@@ -554,10 +520,6 @@ export class Home extends Component {
                         Add Individual Sale
                     </button>
                     
-                    <button className="button is-medium is-danger" onClick={ this.activateSalesModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
-                        Add Sales Data
-                    </button>
-                    
                     <button className="button is-medium is-info" onClick={ this.activateStockModal } style={{marginRight:'1rem', marginBottom: '1rem'}}>
                         Edit Stock Data
                     </button>
@@ -602,39 +564,6 @@ export class Home extends Component {
                                     <label className='label' style={{marginTop: '1rem'}}>Customer's Email (KIIT email preferred)</label>
                                     <input className='input' id='individualSaleEmailInput' type='email' required placeholder='Enter Email'></input>
                                     
-                                </div>
-                                <br></br>
-                                <input type='submit' className="button is-info" value="Update"></input>
-                            </form>
-                        </section>
-                        <footer className="modal-card-foot"></footer>
-                    </div>
-                </div>
-
-                {/* Sales Data Modal */}
-                <div id="salesDataModal" className="modal">
-                    <div className="modal-background"></div>
-                    <div className="modal-card">
-                        <header className="modal-card-head">
-                            <p className="modal-card-title">Add Sales Data</p>
-                            <button className="delete" onClick={this.cancelSalesModal} aria-label="close"></button>
-                        </header>
-                        <section className="modal-card-body">
-                            <form onSubmit={this.submitSalesModalForm}>
-                                <div className='field'>
-                                    <label className='label'>Add Copies Sold</label>
-                                    <input className='input' id='modalSoldInput' type='number' required placeholder='This will be added to the Total'></input>
-                                    
-                                    <label className='label' style={{marginTop: '1rem'}}>
-                                        <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> In Cash
-                                    </label>
-                                    <input className='input' id='modalCashInput' type='number' required placeholder='This will be added to the Total'></input>
-                                    
-                                    <label className='label' style={{marginTop: '1rem'}}>
-                                        <i className="fas fa-credit-card" style={{ marginRight: '0.3rem' }}></i> In Paytm
-                                    </label>
-                                    <input className='input' id='modalPaytmInput' type='number' required placeholder='This will be added to the Total'></input>
-
                                 </div>
                                 <br></br>
                                 <input type='submit' className="button is-info" value="Update"></input>
