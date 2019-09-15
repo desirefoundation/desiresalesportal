@@ -9,5 +9,5 @@
 
 - [ ] Admin Portal
 - [ ] Exchange Verifier
-- [ ] Amount Paid to Coordinator
-- [ ] Add feature of who the book was sold to (name and email) // important
+- [x] Amount Paid to Coordinator
+- [x] Add feature of who the book was sold to (name and email) // important

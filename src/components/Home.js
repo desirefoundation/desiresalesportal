@@ -22,6 +22,8 @@ export class Home extends Component {
         "soldTillDateCash": 0,
         "soldTillDatePaytm": 0,
         "spinnerLoading": true,
+        "amountPaidToCoordinator": 0,
+        "lastUpdated": "",
         "customerdata": []
     }
 
@@ -148,8 +150,34 @@ export class Home extends Component {
         return total;
     }
 
+    // To update the last updated property
+    updateLastUpdated = () => {
+        let uid = this.auth.currentUser.uid;
+
+        this.database.ref(`/salesdata/${uid}`).update({
+            "lastUpdated": new Date().toString()
+        }).catch(err => console.log(err));
+    }
+
 
     // Modal Submission Functions
+
+    updateAmountPaidToCoordinator = (e) => {
+        e.preventDefault();
+        let amount = document.getElementById("amountPaidToCoordinatorInput").value;
+        
+        let uid = this.auth.currentUser.uid;
+
+        this.database.ref(`/salesdata/${uid}`).update({
+            "amountPaidToCoordinator": amount
+        }).then(() => {
+            alert("Updated");
+        }).catch(err => console.log(err));
+
+        this.updateLastUpdated()
+
+    }
+
     submitIndividualSaleModal = (e) => {
         e.preventDefault();
         
@@ -209,6 +237,8 @@ export class Home extends Component {
             .catch(err => alert(err));
         }
 
+        this.updateLastUpdated()
+
     }
 
 
@@ -229,11 +259,13 @@ export class Home extends Component {
                 alert("Update Successful");
                 this.cancelSalesModal();
                 document.location.reload()
-            })
+            }).catch(err => console.log(err));
         }
         else {
             alert("Cash + PayTm is not equal to the Total");
         }
+
+        this.updateLastUpdated()
     }
     
     submitStockModalForm = (e) => {
@@ -251,7 +283,9 @@ export class Home extends Component {
             alert("Update Successful");
             this.cancelStockModal();
             document.location.reload()
-        });
+        }).catch(err => console.log(err));
+
+        this.updateLastUpdated()
     }
 
     submitExchangeModal = (e) => {
@@ -287,6 +321,8 @@ export class Home extends Component {
             this.cancelExchangeModal();
             document.location.reload()
         })
+
+        this.updateLastUpdated()
     
     }
 
@@ -327,6 +363,26 @@ export class Home extends Component {
                         </div>
                     </div>
 
+                    {/* Amount Paid to Coordinator*/}
+                    <div className='column is-narrow'>
+                        <div className='box' style={boxStyle}>
+                            <h1 className='title' style={{fontWeight: '300'}}>
+                                <i className="fas fa-funnel-dollar"></i> Amount Paid to Coordinator
+                            </h1>
+
+                            <h1 className='title' style={{fontWeight: '300'}}>
+                                ₹ {this.state.amountPaidToCoordinator.toString()} /-
+                            </h1>
+
+                            <form onSubmit={this.updateAmountPaidToCoordinator}>
+                                <input id="amountPaidToCoordinatorInput" required type="number" min="0" className='input' placeholder="Enter Amount" style={{width:'60%', marginRight:'1rem'}}></input>
+                                <input type="submit" value="Update" className="button"/>
+                            </form>
+                            
+                        </div>
+                    </div>
+                    
+                    {/* Loader */}
                     <div className="column">
                         <Loader
                             type="Puff"
