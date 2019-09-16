@@ -378,10 +378,11 @@ export class Home extends Component {
         return (
             <div>
                 {/*------- HEADER -----------*/}
-                <h1 style={titleStyle}>Sales Portal</h1>
-                <h3 style={subtitleStyle}>Desire Foundation</h3>
-                
-                <hr style={{color: 'black'}}></hr>
+                <div style={{backgroundColor: '#263238', color: '#ffffff'}}>
+                    <h1 style={titleStyle}>Sales Portal</h1>
+                    <h3 style={subtitleStyle}>Desire Foundation</h3>                
+                    <hr style={{color: 'black'}}></hr>
+                </div>
 
                 {/* ----------- TOP CARDS => (Name Email) & (Total Sold) ------------*/}
                 <div className='columns'  style={{ paddingLeft: '1rem', paddingRight: '1rem', margin: '0rem', marginBottom: '2rem'}}>
