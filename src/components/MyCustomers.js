@@ -4,16 +4,17 @@ import './customers.css'
 
 export class MyCustomers extends Component {
 
+    // Fills up the table displaying the customers
     fillTable = () => {
         if(this.props.customerdata[0] !== undefined){
             let t = document.getElementById("tableBody");
             
             let length = this.props.customerdata.length;
             
-            t.innerHTML = ""
+            t.innerHTML = "" // Reset to avoid repetition
 
             for(let i=0; i<length; i++){
-                if(i === 0)
+                if(i === 0) // skip the dummy data
                     continue
 
                 let tableContent = `
@@ -23,7 +24,6 @@ export class MyCustomers extends Component {
                     <td>${this.props.customerdata[i].copies_sold}</td>
                 </tr>
                 `
-    
                 t.innerHTML += tableContent
             }
 
@@ -52,7 +52,6 @@ export class MyCustomers extends Component {
             </div>
         )
     }
-    
 }
 
 export default MyCustomers

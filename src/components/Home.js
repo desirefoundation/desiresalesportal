@@ -41,7 +41,7 @@ export class Home extends Component {
                 .then(() => {
                     let uid = this.auth.currentUser.uid;
                     
-                    // get the data and set the html
+                    // get the data and set the state and then eventually set HTML of (Stock and Exchanged)
                     this.database.ref(`/salesdata/${uid}`).on('value', (snapshot) => {
                         let sales_data = snapshot.val();
                         this.setState(sales_data);
@@ -84,8 +84,6 @@ export class Home extends Component {
 
                             exchangeTable.innerHTML += d
                         }
-
-
                     });
                     
                     // Get the customer data 
@@ -121,8 +119,8 @@ export class Home extends Component {
                 loggedIn: false
             })
         }
-
     }
+
 
     // Functions to Cancel Modals
     cancelIndividualSaleModal = () => {
@@ -152,7 +150,6 @@ export class Home extends Component {
         let m = document.getElementById("stockDataModal");
         m.setAttribute("class", "modal is-active");
     }
-
 
     activateExchangeModal = () => {
         let m = document.getElementById("exchangeDataModal");
