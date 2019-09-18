@@ -27,15 +27,17 @@ export class Login extends Component {
                 .then(() => {
                     // Login Successful
                     // change login status = true
+                    localStorage.setItem("loginStatus", true)
+                    localStorage.setItem("email_id", email);
+                    localStorage.setItem("password", password);
+                    
+                    this.setState({spinnerLoading: false});
+
                     this.setState({
                         loggedIn: true
                     })
                     
-                    this.setState({spinnerLoading: false});
                     
-                    localStorage.setItem("loginStatus", true)
-                    localStorage.setItem("email_id", email);
-                    localStorage.setItem("password", password);
                 })
                 .catch((error) => {
                     // tell the user about the error

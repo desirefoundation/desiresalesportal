@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
 
 import MyCustomers from './MyCustomers'
@@ -32,6 +33,11 @@ export class Home extends Component {
         super()
         let loginStatus = localStorage.getItem("loginStatus");
         
+        if(loginStatus == null){
+            console.log("login status null")
+            document.location.href = "https://desiresalesportal.team"
+        }
+
         if(loginStatus){
             // Logs in again and gets all the data of that user
             let email_id = localStorage.getItem("email_id");
@@ -506,9 +512,11 @@ export class Home extends Component {
                             <div>
                                 <table className="table is-bordered">
                                     <thead>
-                                        <th>Name</th>
-                                        <th>No.</th>
-                                        <th>Status</th>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>No.</th>
+                                            <th>Status</th>
+                                        </tr>
                                     </thead>
 
                                     <tbody id="exchangeTable"></tbody>
@@ -659,6 +667,7 @@ const titleStyle = {
     fontSize: '3.5rem',
     fontFamily: 'Rubik, sans-serif',
     marginLeft: '2rem',
+    marginRight: '0.5rem',
     paddingTop: '2rem',
     fontWeight: '500'
 }
@@ -667,6 +676,7 @@ const subtitleStyle = {
     fontSize: '2.5rem',
     fontFamily: 'Heebo, sans-serif',
     marginLeft: '2rem',
+    marginRight: '0.5rem',
     fontWeight: '300'
 }
 
