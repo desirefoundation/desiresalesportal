@@ -672,8 +672,8 @@ const titleStyle = {
 }
 
 const subtitleStyle = {
-    fontSize: '2.5rem',
-    fontFamily: 'Heebo, sans-serif',
+    fontSize: '2rem',
+    fontFamily: 'Rubik, sans-serif',
     marginLeft: '2rem',
     marginRight: '0.5rem',
     fontWeight: '300'
