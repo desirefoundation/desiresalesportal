@@ -1,3 +1,8 @@
+/*
+This is the Login Component. The whole login page that opens up
+Just a simple form that sends a request to firebase.
+*/
+
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
@@ -12,10 +17,12 @@ export class Login extends Component {
         spinnerLoading: false
     }
 
+    // Submit the form
     submitForm = (e) => {
         e.preventDefault();
-        this.setState({spinnerLoading: true});
+        this.setState({spinnerLoading: true}); // start the loader
 
+        // get email and password
         let email = document.getElementById('emailInput').value.toString();
         let password = document.getElementById('passwordInput').value.toString();
 
@@ -23,22 +30,23 @@ export class Login extends Component {
             alert('Please enter email and password');
         }
         else {
+            // Start the auth process
             let auth = firebaseapp.auth()
+
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
                     // Login Successful
                     // change login status = true
+                    // set the credentials in the local storage
                     localStorage.setItem("loginStatus", true)
                     localStorage.setItem("email_id", email);
                     localStorage.setItem("password", password);
                     
-                    this.setState({spinnerLoading: false});
+                    this.setState({spinnerLoading: false}); // stop the spinner
 
                     this.setState({
                         loggedIn: true
                     })
-                    
-                    
                 })
                 .catch((error) => {
                     // tell the user about the error
@@ -49,7 +57,8 @@ export class Login extends Component {
     }
 
     render() {
-        if(this.state.loggedIn){
+        // if the user already logged in the move straight to the home
+        if(localStorage.getItem("loginStatus")){
             return <Redirect to="/home" />
         }
 
@@ -101,6 +110,8 @@ export class Login extends Component {
         )
     }
 }
+
+// CSS styles
 
 const titleStyle = {
     textAlign: 'center',
