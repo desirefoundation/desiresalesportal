@@ -13,16 +13,26 @@ export class Home extends Component {
         "loggedIn": false,
         "password": "",
         "buddygroup": "",
-        "copiesTakenLot3": 0,
+        "copiesTaken": {
+            "lot3": 0
+        },
         "copyTransactions": [],
-        "defective": 0,
+        "defective": {
+            "lot3": 0
+        },
         "email": "",
         "name": "",
         "rollno": 0,
-        "soldTillDateCash": 0,
-        "soldTillDatePaytm": 0,
+        "soldTillDateCash": {
+            "lot3": 0
+        },
+        "soldTillDatePaytm": {
+            "lot3": 0
+        },
         "spinnerLoading": true,
-        "amountPaidToCoordinator": 0,
+        "amountPaidToCoordinator": {
+            "lot3": 0
+        },
         "lastUpdated": "",
         "users": {},
         "customerdata": []
@@ -61,7 +71,7 @@ export class Home extends Component {
                         grossTotalspan.innerHTML = `<b>${this.getGrossTotal().toString()}</b>`
                         
                         let stockTotalCopiesInHandSpan = document.getElementById("stockTotalCopiesInHand");
-                        stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm - this.state.soldTillDateCash).toString();
+                        stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm.lot3 - this.state.soldTillDateCash.lot3).toString();
 
 
                         // Set HTML of Exchanged
@@ -175,7 +185,7 @@ export class Home extends Component {
     }
 
     getGrossTotal = () => {
-        let total = this.state.copiesTakenLot3 - this.state.defective + this.getTotalExchanged()
+        let total = this.state.copiesTaken.lot3 - this.state.defective.lot3 + this.getTotalExchanged()
         return total;
     }
 
@@ -199,7 +209,7 @@ export class Home extends Component {
         let uid = this.auth.currentUser.uid;
 
         this.database.ref(`/salesdata/${uid}`).update({
-            "amountPaidToCoordinator": amount
+            "amountPaidToCoordinator": {"lot3": amount}
         }).then(() => {
             alert("Updated");
         }).catch(err => alert(err));
@@ -228,7 +238,7 @@ export class Home extends Component {
         if(mode === "cash"){
             // update the database
             this.database.ref(`/salesdata/${uid}`).update({
-                "soldTillDateCash": this.state.soldTillDateCash + copiesSold
+                "soldTillDateCash": {"lot3": this.state.soldTillDateCash.lot3 + copiesSold}
             })
             .then(() => {
                 // update the customer database
@@ -250,7 +260,7 @@ export class Home extends Component {
         }
         else {
             this.database.ref(`/salesdata/${uid}`).update({
-                "soldTillDatePaytm": this.state.soldTillDatePaytm + copiesSold
+                "soldTillDatePaytm": {"lot3": this.state.soldTillDatePaytm.lot3 + copiesSold}
             })
             .then(() => {
                 let payload = {
@@ -286,8 +296,8 @@ export class Home extends Component {
         
         // update the database
         this.database.ref(`/salesdata/${uid}`).update({
-            "copiesTakenLot3": this.state.copiesTakenLot3 + copiesLot3,
-            "defective": this.state.defective + defective
+            "copiesTaken": {"lot3": this.state.copiesTaken.lot3 + copiesLot3},
+            "defective": {"lot3": this.state.defective.lot3 + defective}
         }).then(() => {
             alert("Update Successful");
             this.cancelStockModal();
@@ -452,7 +462,7 @@ export class Home extends Component {
                             </h1>
 
                             <h1 className='title' style={{fontWeight: '300'}}>
-                                ₹ {((this.state.soldTillDateCash + this.state.soldTillDatePaytm) * 35).toString()} /-
+                                ₹ {((this.state.soldTillDateCash.lot3 + this.state.soldTillDatePaytm.lot3) * 35).toString()} /-
                             </h1>
                             
                         </div>
@@ -466,7 +476,7 @@ export class Home extends Component {
                             </h1>
 
                             <h1 className='title' style={{fontWeight: '300'}}>
-                                ₹ {this.state.amountPaidToCoordinator.toString()} /-
+                                ₹ {this.state.amountPaidToCoordinator.lot3.toString()} /-
                             </h1>
 
                             <form onSubmit={this.updateAmountPaidToCoordinator}>
@@ -490,15 +500,15 @@ export class Home extends Component {
 
                             <br></br>
 
-                            <p style={salesDataStyle}>Total Sales Amount : ₹ {(this.state.soldTillDateCash + this.state.soldTillDatePaytm) * 35}</p>
+                            <p style={salesDataStyle}>Total Sales Amount : ₹ {(this.state.soldTillDateCash.lot3 + this.state.soldTillDatePaytm.lot3) * 35}</p>
 
                             <br></br>
                             
                             <p style={salesDataStyle}>
-                                <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> Cash : ₹ {this.state.soldTillDateCash * 35} ({this.state.soldTillDateCash})
+                                <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> Cash : ₹ {this.state.soldTillDateCash.lot3 * 35} ({this.state.soldTillDateCash.lot3})
                             </p>
                             <p style={salesDataStyle}>
-                                <i className="fas fa-credit-card" style={{ marginRight: '0.35rem' }}></i> Paytm : ₹ {this.state.soldTillDatePaytm * 35} ({this.state.soldTillDatePaytm})
+                                <i className="fas fa-credit-card" style={{ marginRight: '0.35rem' }}></i> Paytm : ₹ {this.state.soldTillDatePaytm.lot3 * 35} ({this.state.soldTillDatePaytm.lot3})
                             </p>
                             
                             <br></br>
@@ -514,13 +524,13 @@ export class Home extends Component {
 
                             <br></br>
 
-                            <p style={notebookStatusStyle}>Copies taken in Lot 3 : <b>{this.state.copiesTakenLot3}</b>  </p>
+                            <p style={notebookStatusStyle}>Copies taken in Lot 3 : <b>{this.state.copiesTaken.lot3}</b>  </p>
                             <br></br>
                             <p style={notebookStatusStyle}>Exchanged : <span id="stockExchangedCopies"></span></p>
-                            <p style={notebookStatusStyle}>Defective : <b>{this.state.defective}</b>  </p>
+                            <p style={notebookStatusStyle}>Defective : <b>{this.state.defective.lot3}</b>  </p>
                             <br></br>
                             <p style={notebookStatusStyle}>Gross Total : <b><span id="stockGrossTotal"></span></b></p>
-                            <p style={notebookStatusStyle}>Total Copies Sold :  <b>{(this.state.soldTillDatePaytm + this.state.soldTillDateCash).toString()}</b>  </p>
+                            <p style={notebookStatusStyle}>Total Copies Sold :  <b>{(this.state.soldTillDatePaytm.lot3 + this.state.soldTillDateCash.lot3).toString()}</b>  </p>
                             <p style={notebookStatusStyle}>Total Copies in Hand : <b><span id="stockTotalCopiesInHand"></span></b>  </p>
                         </div>
                     </div>
