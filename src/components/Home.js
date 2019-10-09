@@ -32,8 +32,8 @@ export class Home extends Component {
         super()
         let loginStatus = localStorage.getItem("loginStatus");
         
-        if(loginStatus == null){
-            console.log("login status null")
+        if(loginStatus == null){ // if not logged in then redirect to login
+            //console.log("login status null")
             document.location.href = "https://desiresalesportal.team"
         }
 
@@ -391,6 +391,19 @@ export class Home extends Component {
         });
     }
 
+    // Logout function
+    logout = (e) => {
+        // Code to log the user out
+        e.preventDefault()
+
+        localStorage.removeItem("loginStatus");
+        localStorage.removeItem("email_id");
+        localStorage.removeItem("password");
+
+        document.location.href = "https://desiresalesportal.team"
+    }
+        
+
     render() {
         return (
             <div>
@@ -426,6 +439,8 @@ export class Home extends Component {
                             <p style= {{fontSize: '1.2rem', fontWeight: '300'}}>
                                 <i className="fas fa-users" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> Buddy Group : {this.state.buddygroup}
                             </p>
+                            <br></br>
+                            <button className="button is-link" onClick={ this.logout }>Log Out</button>
                         </div>
                     </div>
 
