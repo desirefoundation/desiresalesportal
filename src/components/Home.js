@@ -480,7 +480,7 @@ export class Home extends Component {
                             </h1>
 
                             <form onSubmit={this.updateAmountPaidToCoordinator}>
-                                <input id="amountPaidToCoordinatorInput" required type="number" min="0" className='input' placeholder="Enter Amount" style={{width:'60%', marginRight:'1rem'}}></input>
+                                <input id="amountPaidToCoordinatorInput" required type="number" className='input' placeholder="Enter Amount" style={{width:'60%', marginRight:'1rem'}}></input>
                                 <input type="submit" value="Update" className="button"/>
                             </form>
                             
