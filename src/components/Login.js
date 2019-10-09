@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
 
 import firebaseapp from '../firebase'
+import logo from '../logo.png'
 
 export class Login extends Component {
 
@@ -54,6 +55,7 @@ export class Login extends Component {
 
         return (
             <div style={{padding: '1rem'}}>
+                <img alt="logo" src={ logo } style={ logoStyle }></img>
                 <br></br>
                 <br></br>
                 <h1 className='title is-1' style={titleStyle}>SALES PORTAL</h1>
@@ -108,6 +110,10 @@ const titleStyle = {
 const subtitleStyle = {
     textAlign: 'center',
     fontFamily: 'Rubik, sans-serif'
+}
+
+const logoStyle = {
+    width: '5rem'
 }
 
 export default Login
