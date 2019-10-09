@@ -9,6 +9,7 @@
 
 - [ ] Admin Portal
 - [ ] Add some mechanism to accomodate more lots
+- [ ] Add spinner in the modals
 - [x] Exchange Verifier
 - [x] Amount Paid to Coordinator
 - [x] Add feature of who the book was sold to (name and email) // important
