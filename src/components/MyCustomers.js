@@ -1,7 +1,13 @@
+/*
+MyCustomers.js
+
+The bottom most compoment on the home page. 
+Just displays a table of the customers the user has sold to
+*/
+
 import React, { Component } from 'react'
 
 import './customers.css'
-
 export class MyCustomers extends Component {
 
     // Fills up the table displaying the customers

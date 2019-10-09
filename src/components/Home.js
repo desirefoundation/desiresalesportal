@@ -191,6 +191,7 @@ export class Home extends Component {
 
     // Modal Submission Functions
 
+    // Code to update the amount paid to the coordiantor
     updateAmountPaidToCoordinator = (e) => {
         e.preventDefault();
         let amount = document.getElementById("amountPaidToCoordinatorInput").value;
@@ -204,30 +205,33 @@ export class Home extends Component {
         }).catch(err => alert(err));
 
         this.updateLastUpdated()
-
     }
 
+    // Code to submit the Individual sale modal
     submitIndividualSaleModal = (e) => {
         e.preventDefault();
         
+        // Get all the data
         let copiesSold = parseInt(document.getElementById("individualSaleSoldInput").value);
         let paytmRadioButton = document.getElementById("paytmRadioButton");
 
         let customer_name = document.getElementById("individualSaleNameInput").value;
         let customer_email = document.getElementById("individualSaleEmailInput").value;
 
+        // Set the mode of payment
         let mode = "cash"
-
         if(paytmRadioButton.checked)
             mode = "paytm"
 
-        let uid = this.auth.currentUser.uid;
+        let uid = this.auth.currentUser.uid; // get uid
 
         if(mode === "cash"){
+            // update the database
             this.database.ref(`/salesdata/${uid}`).update({
                 "soldTillDateCash": this.state.soldTillDateCash + copiesSold
             })
             .then(() => {
+                // update the customer database
                 let payload = {
                     "name": customer_name,
                     "email": customer_email,
@@ -270,14 +274,17 @@ export class Home extends Component {
     }
 
     
+    // Submit the modal to update the stock info
     submitStockModalForm = (e) => {
         e.preventDefault();
 
+        // get the data
         let copiesLot3 = parseInt(document.getElementById("modalCopiesLot3Input").value);
         let defective = parseInt(document.getElementById("modalDefectiveInput").value);
         
         let uid = this.auth.currentUser.uid;
         
+        // update the database
         this.database.ref(`/salesdata/${uid}`).update({
             "copiesTakenLot3": this.state.copiesTakenLot3 + copiesLot3,
             "defective": this.state.defective + defective
@@ -293,12 +300,16 @@ export class Home extends Component {
     // Filter names for search in Exchange Modal
     filterNames = (e) => {
         e.preventDefault();
+
+        // the input
         let nameInput = document.getElementById("exchangeModalNameInput").value.toString();
+        
+        // the div where the filtered names get added
         let dropdown = document.getElementById("exchangeModalNameDropdown");
 
         let uid_list = Object.keys(this.state.users);
 
-        dropdown.innerHTML = ""
+        dropdown.innerHTML = "" // reset to blank
 
         uid_list.forEach(i => {
             if(this.state.users[i].name.search(nameInput.toUpperCase()) !== -1){
@@ -314,10 +325,11 @@ export class Home extends Component {
         })
     }
 
-
+    // Submit the modal to log the exchange data
     submitExchangeModal = (e) => {
         e.preventDefault();
 
+        // get the data
         let name = document.getElementById("exchangeModalNameInput").value.toString();
         let number = parseInt(document.getElementById("modalExhangeNumberInput").value);
 
