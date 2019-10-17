@@ -449,6 +449,9 @@ export class Home extends Component {
                             <p style= {{fontSize: '1.2rem', fontWeight: '300'}}>
                                 <i className="fas fa-users" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> Buddy Group : {this.state.buddygroup}
                             </p>
+                            <p style= {{fontSize: '1.2rem', fontWeight: '300'}}>
+                                <i className="fas fa-truck-loading" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> Current Lot : Lot 3
+                            </p>
                             <br></br>
                             <button className="button is-link" onClick={ this.logout }>Log Out</button>
                         </div>
