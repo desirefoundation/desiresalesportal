@@ -10,6 +10,7 @@
 
 # build
 /build
+/.firebase
 
 # misc
 .DS_Store
