@@ -787,7 +787,7 @@ export class Home extends Component {
                         <section className="modal-card-body">
                             <form onSubmit={this.submitStockModalForm}>
                                 <div className='field'>
-                                    <label className='label'>Copies Taken in Lot 3</label>
+                                    <label className='label'>Copies Taken in Lot {this.currentLot.toString()}</label>
                                     <input id="modalCopiesLot3Input" className='input' type='number' required placeholder='This will be added to the Total'></input>
                                     
                                     <label className='label' style={{marginTop: '1rem'}}>
