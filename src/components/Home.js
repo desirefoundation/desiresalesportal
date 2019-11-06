@@ -10,7 +10,7 @@ export class Home extends Component {
     database = firebaseapp.database();
     
     // Current Lot
-    currentLot = 4;
+    currentLot = 4; // use this in place of textx "Lot x"
 
     state = {
         "loggedIn": false,
