@@ -140,7 +140,6 @@ export class Home extends Component {
             "lot29": 0,
             "lot30": 0
         },
-        "spinnerLoading": true,
         "amountPaidToCoordinator": {
             "lot3": 0,
             "lot4": 0,
@@ -173,6 +172,8 @@ export class Home extends Component {
         },
         "lastUpdated": "",
         "users": {},
+        "spinnerLoading": true,
+        "modalSpinnerLoading": false,
         "customerdata": []
     }
 
@@ -365,6 +366,7 @@ export class Home extends Component {
     // Code to submit the Individual sale modal
     submitIndividualSaleModal = (e) => {
         e.preventDefault();
+        this.setState({modalSpinnerLoading: true});
         
         // Get all the data
         let copiesSold = parseInt(document.getElementById("individualSaleSoldInput").value);
@@ -398,6 +400,7 @@ export class Home extends Component {
                 
                 this.database.ref(`/customerdata/${uid}`).set(final)
                     .then(() => {
+                        this.setState({modalSpinnerLoading: false});
                         alert("Update Successful");
                     });
             })
@@ -419,6 +422,7 @@ export class Home extends Component {
 
                 this.database.ref(`/customerdata/${uid}`).set(final)
                     .then(() => {
+                        this.setState({modalSpinnerLoading: false});
                         alert("Update Successful");
                     });
             })
@@ -432,6 +436,7 @@ export class Home extends Component {
     // Submit the modal to update the stock info
     submitStockModalForm = (e) => {
         e.preventDefault();
+        this.setState({modalSpinnerLoading : true});
 
         // get the data
         let copiesLot3 = parseInt(document.getElementById("modalCopiesLot3Input").value);
@@ -446,6 +451,7 @@ export class Home extends Component {
             this.database.ref(`/salesdata/${uid}/defective`).update({
                 "lot4": this.state.defective.lot4 + defective
             }).then(() => {
+                this.setState({modalSpinnerLoading : false});
                 alert("Update Successful");
                 this.cancelStockModal();
                 document.location.reload()
@@ -486,6 +492,7 @@ export class Home extends Component {
     // Submit the modal to log the exchange data
     submitExchangeModal = (e) => {
         e.preventDefault();
+        this.setState({modalSpinnerLoading : true});
 
         // get the data
         let name = document.getElementById("exchangeModalNameInput").value.toString();
@@ -541,6 +548,7 @@ export class Home extends Component {
                     this.database.ref(`/salesdata/${other_uid}`).update({
                         "copyTransactions": other_copyTransactions
                     }).then(() => {
+                        this.setState({modalSpinnerLoading : false});
                         alert("Update Successful");
                         this.cancelExchangeModal();
                         document.location.reload()
@@ -767,6 +775,15 @@ export class Home extends Component {
                                     <input className='input' id='individualSaleEmailInput' type='email' required placeholder='Enter Email'></input>
                                     
                                 </div>
+                                <div style={{paddingTop: '1rem'}}>
+                                    <Loader
+                                        type="Puff"
+                                        color="#00BFFF"
+                                        height={50}
+                                        width={50}
+                                        visible={this.state.modalSpinnerLoading}
+                                    />
+                                </div>
                                 <br></br>
                                 <input type='submit' className="button is-info" value="Update"></input>
                             </form>
@@ -796,6 +813,17 @@ export class Home extends Component {
                                     <input id="modalDefectiveInput" className='input' type='number' required placeholder='This will be added to the Total'></input>
 
                                 </div>
+                                
+                                <div style={{paddingTop: '1rem'}}>
+                                    <Loader
+                                        type="Puff"
+                                        color="#00BFFF"
+                                        height={50}
+                                        width={50}
+                                        visible={this.state.modalSpinnerLoading}
+                                    />
+                                </div>
+                                
                                 <br></br>
                                 <input type='submit' className="button is-info" value="Update"></input>
                             </form>
@@ -837,6 +865,17 @@ export class Home extends Component {
                                     <input id="modalExhangeNumberInput" className='input' type='number' min='0' required placeholder='Enter a Positive Number'></input>
 
                                 </div>
+
+                                <div style={{paddingTop: '1rem'}}>
+                                    <Loader
+                                        type="Puff"
+                                        color="#00BFFF"
+                                        height={50}
+                                        width={50}
+                                        visible={this.state.modalSpinnerLoading}
+                                    />
+                                </div>
+
                                 <br></br>
                                 <input type='submit' className="button is-info" value="Update"></input>
                             </form>
