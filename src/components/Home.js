@@ -508,14 +508,14 @@ export class Home extends Component {
         let payload = {
             "givenTo": name,
             "amount": number,
-            "lot": currentLot
+            "lot": this.currentLot
         }
         
         // payload of the other person copies were exchanged with
         let payload_other = {
             "givenTo": this.state.users[this.auth.currentUser.uid].name,
             "amount": -number,
-            "lot": currentLot
+            "lot": this.currentLot
         }
 
     
