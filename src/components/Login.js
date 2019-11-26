@@ -18,7 +18,7 @@ export class Login extends Component {
     }
 
     // Submit the form
-    submitForm = (e) => {
+    submitLoginForm = (e) => {
         e.preventDefault();
         this.setState({spinnerLoading: true}); // start the loader
 
@@ -72,7 +72,7 @@ export class Login extends Component {
                 
                 <br></br>
                 
-                <form className='column is-half is-offset-one-quarter' onSubmit={ this.submitForm }>
+                <form className='column is-half is-offset-one-quarter' onSubmit={ this.submitLoginForm }>
                     <div className='field'>
                         <label className='label'>Email</label>
                         <div className='control'>
