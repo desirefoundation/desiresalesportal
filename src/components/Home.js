@@ -339,7 +339,7 @@ export class Home extends Component {
     updateLastUpdated = () => {
         let uid = this.auth.currentUser.uid;
 
-        this.database.ref(`/salesdata/${uid}`).update({
+        this.database.ref(`/salesdata/${uid}`).date({
             "lastUpdated": new Date().toString()
         }).catch(err => alert(err));
     }
@@ -367,6 +367,8 @@ export class Home extends Component {
     submitIndividualSaleModal = (e) => {
         e.preventDefault();
         this.setState({modalSpinnerLoading: true});
+
+        this.updateLastUpdated()
         
         // Get all the data
         let copiesSold = parseInt(document.getElementById("individualSaleSoldInput").value);
@@ -428,8 +430,6 @@ export class Home extends Component {
             })
             .catch(err => alert(err));
         }
-
-        this.updateLastUpdated()
     }
 
     
@@ -443,6 +443,8 @@ export class Home extends Component {
         let defective = parseInt(document.getElementById("modalDefectiveInput").value);
         
         let uid = this.auth.currentUser.uid;
+        
+        this.updateLastUpdated()
         
         // update the database
         this.database.ref(`/salesdata/${uid}/copiesTaken`).update({
@@ -458,7 +460,6 @@ export class Home extends Component {
             })
         }).catch(err => alert(err));
 
-        this.updateLastUpdated()
     }
 
     // Filter names for search in Exchange Modal
@@ -551,8 +552,8 @@ export class Home extends Component {
                         this.setState({modalSpinnerLoading : false});
                         alert("Update Successful");
                         this.cancelExchangeModal();
-                        document.location.reload()
                         this.updateLastUpdated()
+                        document.location.reload()
                     })
     
                 });

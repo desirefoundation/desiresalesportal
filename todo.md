@@ -7,9 +7,11 @@
 - [x] Add progressbar on home as well
 - [x] Add given and taken for stock data
 
-- [ ] Add spinner in the modals
+- [x] Add spinner in the modals
 - [x] Admin Portal
 - [x] Add some mechanism to accomodate more lots
 - [x] Exchange Verifier
 - [x] Amount Paid to Coordinator
 - [x] Add feature of who the book was sold to (name and email) // important
+- [ ] Feature to edit name and emails
+- [ ] Feature to edit exchanges
