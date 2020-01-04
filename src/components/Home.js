@@ -238,6 +238,7 @@ export class Home extends Component {
                                 <td>${exchangeData[i].givenTo}</td>
                                 <td>${Math.abs(exchangeData[i].amount)}</td>
                                 <td>${exchangeStatus}</td>
+                                <td><i class="fas fa-trash-alt"></i></td>
                             </tr>`
 
                             exchangeTable.innerHTML += d
@@ -339,7 +340,7 @@ export class Home extends Component {
     updateLastUpdated = () => {
         let uid = this.auth.currentUser.uid;
 
-        this.database.ref(`/salesdata/${uid}`).date({
+        this.database.ref(`/salesdata/${uid}`).update({
             "lastUpdated": new Date().toString()
         }).catch(err => alert(err));
     }
@@ -560,6 +561,17 @@ export class Home extends Component {
         });
     }
 
+    // Delete a particular customer
+    deleteCustomer = (i) => {
+        const removeItem = (arr, i) => arr.slice(0, i).concat(arr.slice(i+1, arr.length))
+
+        if(window.confirm(`Are you sure you want to delete ${this.state.customerdata[i].name} from your customers ?`)) {
+            let uid = this.auth.currentUser.uid;
+            this.database.ref(`/customerdata/${uid}`).set(removeItem(this.state.customerdata, i));
+
+        }
+    }
+
     // Logout function
     logout = (e) => {
         // Code to log the user out
@@ -714,6 +726,7 @@ export class Home extends Component {
                                             <th>Name</th>
                                             <th>No.</th>
                                             <th>Status</th>
+                                            <th>...</th>
                                         </tr>
                                     </thead>
 
@@ -742,7 +755,7 @@ export class Home extends Component {
 
                 <br></br>
 
-                <MyCustomers customerdata={this.state.customerdata}></MyCustomers>
+                <MyCustomers customerdata={this.state.customerdata} deleteCustomer={this.deleteCustomer}></MyCustomers>
 
                 <br></br>
                 
