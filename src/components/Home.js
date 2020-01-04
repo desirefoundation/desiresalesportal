@@ -339,7 +339,7 @@ export class Home extends Component {
     updateLastUpdated = () => {
         let uid = this.auth.currentUser.uid;
 
-        this.database.ref(`/salesdata/${uid}`).date({
+        this.database.ref(`/salesdata/${uid}`).update({
             "lastUpdated": new Date().toString()
         }).catch(err => alert(err));
     }
