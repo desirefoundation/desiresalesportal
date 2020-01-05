@@ -14,7 +14,7 @@ export class MyCustomers extends Component {
         if(this.props.customerdata[0] !== undefined){
             return (
                 <div>
-                    <h3 className="customerHeader">My Customers</h3>
+                    <h3 className="customerHeader">All Customers</h3>
                     <br></br>
                     <div className="tableContainer">
                         <table className="table is-bordered column is-full">
@@ -28,7 +28,7 @@ export class MyCustomers extends Component {
                             <tbody id="tableBody">
                                 {this.props.customerdata.map((customer, index) => {
                                     if(index === 0)
-                                        return (<tr></tr>)
+                                        return (<tr key={index}></tr>)
                                     
                                     return (
                                         <tr key={index}>
