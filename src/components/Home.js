@@ -452,7 +452,7 @@ export class Home extends Component {
         dropdown.innerHTML = "" // reset to blank
 
         uid_list.forEach(i => {
-            if(this.state.users[i].name.search(nameInput.toUpperCase()) !== -1){
+            if(this.state.users[i].name.toUpperCase().search(nameInput.toUpperCase()) !== -1){
                 if(this.state.users[i].name === this.state.name)
                     return;
 
