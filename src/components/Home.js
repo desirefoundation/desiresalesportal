@@ -10,7 +10,7 @@ export class Home extends Component {
     database = firebaseapp.database();
     
     // Current Lot
-    currentLot = 4; // use this in place of textx "Lot x"
+    currentLot = 5; // use this in place of textx "Lot x", Netflix Copies
 
     state = {
         "loggedIn": false,
@@ -210,38 +210,13 @@ export class Home extends Component {
                         grossTotalspan.innerHTML = `<b>${this.getGrossTotal().toString()}</b>`
                         
                         let stockTotalCopiesInHandSpan = document.getElementById("stockTotalCopiesInHand");
-                        stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm.lot4 - this.state.soldTillDateCash.lot4).toString();
+                        stockTotalCopiesInHandSpan.innerHTML = (this.getGrossTotal() - this.state.soldTillDatePaytm.lot5 - this.state.soldTillDateCash.lot5).toString();
 
 
                         // Set HTML of Exchanged
                         let exchangeExchangedCopiesSpan = document.getElementById("exchangeExchangedCopies")
                         exchangeExchangedCopiesSpan.innerHTML = `<b>${total.toString()}</b>`
 
-                        let exchangeData = this.state.copyTransactions
-                        let exchangeTable = document.getElementById("exchangeTable");
-                        
-                        exchangeTable.innerHTML = ""
-                        
-                        for(let i=1; i<exchangeData.length; i++){
-                            if(exchangeData[i].lot !== this.currentLot){
-                                continue;
-                            }
-
-                            let exchangeStatus = "given"
-
-                            if(exchangeData[i].amount > 0) {
-                                exchangeStatus = "taken"
-                            }
-
-                            let d = `
-                            <tr>
-                                <td>${exchangeData[i].givenTo}</td>
-                                <td>${Math.abs(exchangeData[i].amount)}</td>
-                                <td>${exchangeStatus}</td>
-                            </tr>`
-
-                            exchangeTable.innerHTML += d
-                        }
                     });
                     
                     // Get the customer data 
@@ -331,7 +306,7 @@ export class Home extends Component {
     }
 
     getGrossTotal = () => {
-        let total = parseInt(this.state.copiesTaken.lot4) - parseInt(this.state.defective.lot4) + this.getTotalExchanged()
+        let total = parseInt(this.state.copiesTaken.lot5) - parseInt(this.state.defective.lot5) + this.getTotalExchanged()
         return total;
     }
 
@@ -355,7 +330,7 @@ export class Home extends Component {
         let uid = this.auth.currentUser.uid;
 
         this.database.ref(`/salesdata/${uid}/amountPaidToCoordinator`).update({
-            "lot4": amount.toString()
+            "lot5": amount.toString()
         }).then(() => {
             alert("Updated");
         }).catch(err => alert(err));
@@ -387,7 +362,7 @@ export class Home extends Component {
         if(mode === "cash"){
             // update the database
             this.database.ref(`/salesdata/${uid}/soldTillDateCash`).update({
-                "lot4": this.state.soldTillDateCash.lot4 + copiesSold
+                "lot5": this.state.soldTillDateCash.lot5 + copiesSold
             })
             .then(() => {
                 // update the customer database
@@ -410,7 +385,7 @@ export class Home extends Component {
         }
         else {
             this.database.ref(`/salesdata/${uid}/soldTillDatePaytm`).update({
-                "lot4": this.state.soldTillDatePaytm.lot4 + copiesSold
+                "lot5": this.state.soldTillDatePaytm.lot5 + copiesSold
             })
             .then(() => {
                 let payload = {
@@ -448,10 +423,10 @@ export class Home extends Component {
         
         // update the database
         this.database.ref(`/salesdata/${uid}/copiesTaken`).update({
-            "lot4": this.state.copiesTaken.lot4 + copiesLot3
+            "lot5": this.state.copiesTaken.lot5 + copiesLot3
         }).then(() => {
             this.database.ref(`/salesdata/${uid}/defective`).update({
-                "lot4": this.state.defective.lot4 + defective
+                "lot5": this.state.defective.lot5 + defective
             }).then(() => {
                 this.setState({modalSpinnerLoading : false});
                 alert("Update Successful");
@@ -477,7 +452,7 @@ export class Home extends Component {
         dropdown.innerHTML = "" // reset to blank
 
         uid_list.forEach(i => {
-            if(this.state.users[i].name.search(nameInput.toUpperCase()) !== -1){
+            if(this.state.users[i].name.toUpperCase().search(nameInput.toUpperCase()) !== -1){
                 if(this.state.users[i].name === this.state.name)
                     return;
 
@@ -560,6 +535,16 @@ export class Home extends Component {
         });
     }
 
+    // Delete a particular customer
+    deleteCustomer = (i) => {
+        const removeItem = (arr, i) => arr.slice(0, i).concat(arr.slice(i+1, arr.length))
+
+        if(window.confirm(`Are you sure you want to delete ${this.state.customerdata[i].name} from your customers ?`)) {
+            let uid = this.auth.currentUser.uid;
+            this.database.ref(`/customerdata/${uid}`).set(removeItem(this.state.customerdata, i));
+        }
+    }
+
     // Logout function
     logout = (e) => {
         // Code to log the user out
@@ -609,7 +594,7 @@ export class Home extends Component {
                                 <i className="fas fa-users" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> Buddy Group : {this.state.buddygroup}
                             </p>
                             <p style= {{fontSize: '1.2rem', fontWeight: '300'}}>
-                                <i className="fas fa-truck-loading" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> Current Lot : Lot {this.currentLot.toString()}
+                                <i className="fas fa-truck-loading" style={{color: '#0d47a1', marginRight: '0.2rem'}}></i> Current Lot : Netflix Copies
                             </p>
                             <br></br>
                             <button className="button is-link" onClick={ this.logout }>Log Out</button>
@@ -624,7 +609,7 @@ export class Home extends Component {
                             </h1>
 
                             <h1 className='title' style={{fontWeight: '300'}}>
-                                ₹ {((this.state.soldTillDateCash.lot4 + this.state.soldTillDatePaytm.lot4) * 35).toString()} /-
+                                ₹ {((this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * 35).toString()} /-
                             </h1>
                             
                         </div>
@@ -638,7 +623,7 @@ export class Home extends Component {
                             </h1>
 
                             <h1 className='title' style={{fontWeight: '300'}}>
-                                ₹ {this.state.amountPaidToCoordinator.lot4.toString()} /-
+                                ₹ {this.state.amountPaidToCoordinator.lot5.toString()} /-
                             </h1>
 
                             <form onSubmit={this.updateAmountPaidToCoordinator}>
@@ -662,15 +647,15 @@ export class Home extends Component {
 
                             <br></br>
 
-                            <p style={salesDataStyle}>Total Sales Amount : ₹ {(this.state.soldTillDateCash.lot4 + this.state.soldTillDatePaytm.lot4) * 35}</p>
+                            <p style={salesDataStyle}>Total Sales Amount : ₹ {(this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * 35}</p>
 
                             <br></br>
                             
                             <p style={salesDataStyle}>
-                                <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> Cash : ₹ {this.state.soldTillDateCash.lot4 * 35} ({this.state.soldTillDateCash.lot4})
+                                <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> Cash : ₹ {this.state.soldTillDateCash.lot5 * 35} ({this.state.soldTillDateCash.lot5})
                             </p>
                             <p style={salesDataStyle}>
-                                <i className="fas fa-credit-card" style={{ marginRight: '0.35rem' }}></i> Paytm : ₹ {this.state.soldTillDatePaytm.lot4 * 35} ({this.state.soldTillDatePaytm.lot4})
+                                <i className="fas fa-credit-card" style={{ marginRight: '0.35rem' }}></i> Paytm : ₹ {this.state.soldTillDatePaytm.lot5 * 35} ({this.state.soldTillDatePaytm.lot5})
                             </p>
                             
                             <br></br>
@@ -686,13 +671,13 @@ export class Home extends Component {
 
                             <br></br>
 
-                            <p style={notebookStatusStyle}>Copies taken in Lot {this.currentLot.toString()} : <b>{this.state.copiesTaken.lot4}</b>  </p>
+                            <p style={notebookStatusStyle}>Copies Taken : <b>{this.state.copiesTaken.lot5}</b>  </p>
                             <br></br>
                             <p style={notebookStatusStyle}>Exchanged : <span id="stockExchangedCopies"></span></p>
-                            <p style={notebookStatusStyle}>Defective : <b>{this.state.defective.lot4}</b>  </p>
+                            <p style={notebookStatusStyle}>Defective : <b>{this.state.defective.lot5}</b>  </p>
                             <br></br>
                             <p style={notebookStatusStyle}>Gross Total : <b><span id="stockGrossTotal"></span></b></p>
-                            <p style={notebookStatusStyle}>Total Copies Sold :  <b>{(this.state.soldTillDatePaytm.lot4 + this.state.soldTillDateCash.lot4).toString()}</b>  </p>
+                            <p style={notebookStatusStyle}>Total Copies Sold :  <b>{(this.state.soldTillDatePaytm.lot5 + this.state.soldTillDateCash.lot5).toString()}</b>  </p>
                             <p style={notebookStatusStyle}>Total Copies in Hand : <b><span id="stockTotalCopiesInHand"></span></b>  </p>
                         </div>
                     </div>
@@ -717,7 +702,27 @@ export class Home extends Component {
                                         </tr>
                                     </thead>
 
-                                    <tbody id="exchangeTable"></tbody>
+                                    <tbody id="exchangeTable">
+                                        {this.state.copyTransactions.map((exchange, index) => {
+                                            if(exchange.lot !== this.currentLot){
+                                                return (<tr key={index}></tr>)
+                                            }
+                
+                                            let exchangeStatus = "given"
+                
+                                            if(exchange.amount > 0) {
+                                                exchangeStatus = "taken"
+                                            }
+                
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{exchange.givenTo}</td>
+                                                    <td>{Math.abs(exchange.amount)}</td>
+                                                    <td>{exchangeStatus}</td>
+                                                </tr> 
+                                            )
+                                        })}
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -742,7 +747,7 @@ export class Home extends Component {
 
                 <br></br>
 
-                <MyCustomers customerdata={this.state.customerdata}></MyCustomers>
+                <MyCustomers customerdata={this.state.customerdata} deleteCustomer={this.deleteCustomer}></MyCustomers>
 
                 <br></br>
                 
@@ -757,22 +762,24 @@ export class Home extends Component {
                         <section className="modal-card-body">
                             <form onSubmit={this.submitIndividualSaleModal}>
                                 <div className='field'>
-                                    <label className='label'>Copies Sold</label>
+                                    <label className='label'>Copies Sold *</label>
                                     <input className='input' id='individualSaleSoldInput' type='number' min='0' required placeholder='This will be added to the total'></input>
                                     
                                     <div style={this.radioButtonStyle}>
                                         <br></br>
-                                        <label className='label'>Mode of Payment</label>
+                                        <label className='label'>Mode of Payment *</label>
                                         <input type="radio" name="cashPaytm" id="cashRadioButton" defaultChecked/> Cash <br></br>
                                         <input type="radio" name="cashPaytm" id="paytmRadioButton"/> Paytm
                                     </div>
                                     
                                     <br></br>
 
-                                    <label className='label' style={{marginTop: '1rem'}}>Customer's Name</label>
+                                    <label style={{marginTop: '1rem'}}>If you just want to add a customer and their email, put no. of copies sold = 0</label>
+
+                                    <label className='label' style={{marginTop: '1rem'}}>Customer's Name *</label>
                                     <input className='input' id='individualSaleNameInput' type='text' required placeholder='Enter Name'></input>
 
-                                    <label className='label' style={{marginTop: '1rem'}}>Customer's Email (KIIT email preferred)</label>
+                                    <label className='label' style={{marginTop: '1rem'}}>Customer's Email (KIIT email preferred) *</label>
                                     <input className='input' id='individualSaleEmailInput' type='email' required placeholder='Enter Email'></input>
                                     
                                 </div>
