@@ -11,6 +11,7 @@ export class Home extends Component {
     
     // Current Lot
     currentLot = 5; // use this in place of textx "Lot x", Netflix Copies
+    price = 40;
 
     state = {
         "loggedIn": false,
@@ -609,7 +610,7 @@ export class Home extends Component {
                             </h1>
 
                             <h1 className='title' style={{fontWeight: '300'}}>
-                                ₹ {((this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * 40).toString()} /-
+                                ₹ {((this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * this.price).toString()} /-
                             </h1>
                             
                         </div>
@@ -647,15 +648,15 @@ export class Home extends Component {
 
                             <br></br>
 
-                            <p style={salesDataStyle}>Total Sales Amount : ₹ {(this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * 40}</p>
+                            <p style={salesDataStyle}>Total Sales Amount : ₹ {(this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * this.price}</p>
 
                             <br></br>
                             
                             <p style={salesDataStyle}>
-                                <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> Cash : ₹ {this.state.soldTillDateCash.lot5 * 40} ({this.state.soldTillDateCash.lot5})
+                                <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> Cash : ₹ {this.state.soldTillDateCash.lot5 * this.price} ({this.state.soldTillDateCash.lot5})
                             </p>
                             <p style={salesDataStyle}>
-                                <i className="fas fa-credit-card" style={{ marginRight: '0.40rem' }}></i> Paytm : ₹ {this.state.soldTillDatePaytm.lot5 * 40} ({this.state.soldTillDatePaytm.lot5})
+                                <i className="fas fa-credit-card" style={{ marginRight: '0.this.pricerem' }}></i> Paytm : ₹ {this.state.soldTillDatePaytm.lot5 * this.price} ({this.state.soldTillDatePaytm.lot5})
                             </p>
                             
                             <br></br>
@@ -924,7 +925,7 @@ const boxStyle = {
 const cardHeaderStyle = {
     fontFamily: 'Rubik, sans-serif',
     fontSize: '2rem',
-    fontWeight: '400'
+    fontWeight: 'this.price0'
 }
 
 const salesDataStyle = {
