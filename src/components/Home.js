@@ -609,7 +609,7 @@ export class Home extends Component {
                             </h1>
 
                             <h1 className='title' style={{fontWeight: '300'}}>
-                                ₹ {((this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * 35).toString()} /-
+                                ₹ {((this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * 40).toString()} /-
                             </h1>
                             
                         </div>
@@ -647,15 +647,15 @@ export class Home extends Component {
 
                             <br></br>
 
-                            <p style={salesDataStyle}>Total Sales Amount : ₹ {(this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * 35}</p>
+                            <p style={salesDataStyle}>Total Sales Amount : ₹ {(this.state.soldTillDateCash.lot5 + this.state.soldTillDatePaytm.lot5) * 40}</p>
 
                             <br></br>
                             
                             <p style={salesDataStyle}>
-                                <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> Cash : ₹ {this.state.soldTillDateCash.lot5 * 35} ({this.state.soldTillDateCash.lot5})
+                                <i className="fas fa-money-bill-alt" style={{ marginRight: '0.3rem' }}></i> Cash : ₹ {this.state.soldTillDateCash.lot5 * 40} ({this.state.soldTillDateCash.lot5})
                             </p>
                             <p style={salesDataStyle}>
-                                <i className="fas fa-credit-card" style={{ marginRight: '0.35rem' }}></i> Paytm : ₹ {this.state.soldTillDatePaytm.lot5 * 35} ({this.state.soldTillDatePaytm.lot5})
+                                <i className="fas fa-credit-card" style={{ marginRight: '0.40rem' }}></i> Paytm : ₹ {this.state.soldTillDatePaytm.lot5 * 40} ({this.state.soldTillDatePaytm.lot5})
                             </p>
                             
                             <br></br>
