@@ -5,6 +5,8 @@ import './App.css';
 import { Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import './Components/About/About'
+
 const App: React.FC = () => {
   return (
     <div className="App">
