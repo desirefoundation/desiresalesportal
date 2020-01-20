@@ -1,38 +1,44 @@
-# Sales Portal for Desire Foundation
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This is a portal to log and manage the sales data of [Desire Foundation](http://desirefoundation.org/). 
-Previous method had a lot of intermediaries and was prone to errors. 
-This project aims to streamline the data management process.
+## Available Scripts
 
-[![GitHub issues](https://img.shields.io/github/issues/junaidrahim/desiresalesportal?style=for-the-badge)](https://github.com/junaidrahim/desiresalesportal/issues)
+In the project directory, you can run:
 
-[![GitHub stars](https://img.shields.io/github/stars/junaidrahim/desiresalesportal?style=for-the-badge)](https://github.com/junaidrahim/desiresalesportal/stargazers)  
-[![GitHub forks](https://img.shields.io/github/forks/junaidrahim/desiresalesportal?style=for-the-badge)](https://github.com/junaidrahim/desiresalesportal/network)
+### `npm start`
 
-## Build Status
+Runs the app in the development mode.<br />
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-![Travis (.com)](https://img.shields.io/travis/com/junaidrahim/desiresalesportal?style=for-the-badge)
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
 
+### `npm test`
 
+Launches the test runner in the interactive watch mode.<br />
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## Tools Used
+### `npm run build`
 
-* The database and authentication is handled by **Firebase**. 
-* The UI is developed in **React**. 
-* **Bulma** is used for CSS components
+Builds the app for production to the `build` folder.<br />
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-live at https://desiresalesportal.team
+The build is minified and the filenames include the hashes.<br />
+Your app is ready to be deployed!
 
-## Workflow
-* Pull Requests and code for new features go in the `development` branch.
-* Pull Requests merged to `master` from `development` are built and deployed to production.
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+### `npm run eject`
 
-## LICENSE
-Copyright (c) **Junaid H Rahim**. All rights reserved.
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-[![](https://img.shields.io/github/license/junaidrahim/desiresalesportal?style=for-the-badge)](LICENSE)
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
+Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
