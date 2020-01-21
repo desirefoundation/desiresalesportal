@@ -11,6 +11,12 @@ import About from './About/About'
 export class Dashboard extends Component {
 
     render() {
+        const loginStatus: string | null = localStorage.getItem("loginStatus");
+        
+        if ((loginStatus === null) || (loginStatus === "false")){
+            return <Redirect to="/login"></Redirect>
+        }
+
         return (
             <Router>
                 <div>

@@ -4,6 +4,7 @@ import Loader from 'react-loader-spinner'
 
 import firebaseapp from '../../firebase'
 import logo from '../../assets/logo.png'
+import './bulma.min.css'
 import './login.css'
 
 
