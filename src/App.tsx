@@ -1,31 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
-import { Button } from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import './Components/About/About'
+import Login from './Components/Login/Login'
+import Dashboard from './Components/Dashboard/Dashboard'
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      <Button variant="primary">Test</Button>
-    </div>
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route exact path="/" component={ Login }></Route>
+          <Route exact path="/login" component={ Login }></Route>
+          <Route exact path="/dashboard" component={ Dashboard }></Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
