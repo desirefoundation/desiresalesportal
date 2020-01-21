@@ -11,9 +11,12 @@ import Stock from './Stock/Stock'
 import Exchange from './Exchange/Exchange'
 import About from './About/About'
 
+import firebaseapp from '../../firebase'
+
 export class Dashboard extends Component {
 
-    
+    auth = firebaseapp.auth()
+    database = firebaseapp.database()
 
     logout = (e: React.SyntheticEvent) : void => {
         e.preventDefault()
