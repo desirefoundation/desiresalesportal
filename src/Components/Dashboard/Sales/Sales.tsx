@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 
-export class Sales extends Component {
+interface props {
+    data: string
+}
+export class Sales extends Component<props> {
     render() {
         return (
             <div>
-                
+                <h1>{this.props.data}</h1>
             </div>
         )
     }

@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
 
-interface props {
-    name: string;
-}
-export class Stock extends React.Component<props> {
+export class Stock extends React.Component{
     render() {
         return (
             <div>
-                
+                <h1>I am stock</h1>
             </div>
         )
     }

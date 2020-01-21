@@ -4,7 +4,7 @@ export class Exchange extends Component {
     render() {
         return (
             <div>
-                
+                <h1>I am exchange</h1>
             </div>
         )
     }
