@@ -4,7 +4,8 @@ export class Overview extends Component {
     render() {
         return (
             <div>
-                <h1>I am Overview</h1>
+                <br></br>
+                <h6>I am Overview</h6>
             </div>
         )
     }
