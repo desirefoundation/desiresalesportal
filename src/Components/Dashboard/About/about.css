@@ -1,0 +1,27 @@
+.about-header{
+    padding: 4rem;
+    padding-bottom: 2rem;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 400;
+}
+
+.about-details {
+    font-family: 'Heebo', sans-serif;
+    padding-left: 4rem;
+    font-size: 1.2rem;
+
+}
+
+.about-details p {
+    margin: 0rem;
+}
+
+@media screen and (max-width: 600px){
+    .about-header {
+        padding: 2rem;
+    }
+
+    .about-details {
+        padding-left: 2rem;
+    }
+}
