@@ -72,7 +72,7 @@ export class Dashboard extends Component {
 
                     <Switch>
                         <Route exact={true} path="/dashboard" component={() => <Overview></Overview>}></Route>
-                        <Route exact={true} path="/dashboard/sales" component={() => <Sales data="Junaid"></Sales>}></Route>
+                        <Route exact={true} path="/dashboard/sales" component={() => <Sales></Sales>}></Route>
                         <Route exact={true} path="/dashboard/stock" component={() => <Stock></Stock>}></Route>
                         <Route exact={true} path="/dashboard/exchange" component={() => <Exchange></Exchange>}></Route>
                         <Route exact={true} path="/dashboard/about" component={() => <About></About>}></Route>

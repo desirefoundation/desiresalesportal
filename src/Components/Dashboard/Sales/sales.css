@@ -1,0 +1,22 @@
+.sales-cards-container {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.sales-card-text {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 400;
+    font-size: 1.4rem;
+}
+
+
+
+@media screen and (max-width: 800px){
+    .sales-cards-container {
+        grid-template-columns: repeat(1 , 1fr);
+    }
+}
