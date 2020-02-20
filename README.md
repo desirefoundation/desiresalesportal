@@ -19,7 +19,7 @@ This project aims to streamline the data management process.
 
 * The database and authentication is handled by **Firebase**. 
 * The UI is developed in **React**. 
-* **Bulma** is used for CSS components
+* **Bootstrap** is used for CSS components
 
 live at https://desiresalesportal.team
 
