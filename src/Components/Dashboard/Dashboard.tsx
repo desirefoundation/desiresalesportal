@@ -18,6 +18,15 @@ export class Dashboard extends Component {
     auth = firebaseapp.auth()
     database = firebaseapp.database()
 
+    state = {
+        salesDataFetched: false,
+        customerDataFetched: false,
+        usersListFetched: false,
+        salesData: {},
+        customerData: {},
+        usersList: {}
+    }
+
     logout = (e: React.SyntheticEvent) : void => {
         e.preventDefault()
 
@@ -26,6 +35,42 @@ export class Dashboard extends Component {
         localStorage.removeItem("password");
 
         document.location.href = "https://desiresalesportal.team"
+    }
+
+    componentDidMount = () => {
+        const email_id : any = localStorage.getItem("email_id");
+        const password : any = localStorage.getItem("password");
+        
+        this.auth.signInWithEmailAndPassword(email_id, password)
+            .then(() => {
+                console.log("Fetching Data")
+                const uid : string | undefined = this.auth.currentUser?.uid;
+                
+                // Get Sales Data
+                this.database.ref(`/salesdata/${uid}`).on('value', (snapshot) => {
+                    this.setState({
+                        salesDataFetched: true,
+                        salesData: snapshot.val()
+                    })
+                });
+
+                // Get Customer Data
+                this.database.ref(`/customerdata/${uid}`).on('value', (snapshot) => {
+                    this.setState({
+                        customerDataFetched: true,
+                        customerData: snapshot.val()
+                    })
+                });
+
+                // Get List of all users
+                this.database.ref(`/users/`).on('value', (snapshot) => {
+                    this.setState({
+                        usersListFetched: true,
+                        usersList: snapshot.val()
+                    })
+                })
+
+            });
     }
     
     render() {

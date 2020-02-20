@@ -11,7 +11,6 @@ import './login.css'
 export class Login extends Component {
 
     state = {
-        loggedIn: false,
         spinnerLoading: false,
         email: "",
         password: ""
@@ -44,8 +43,7 @@ export class Login extends Component {
                 localStorage.setItem("password", this.state.password);
                 
                 this.setState({
-                    spinnerLoading: false,
-                    loggedIn: true
+                    spinnerLoading: false
                 });
             })
             .catch((error) => {
@@ -101,7 +99,7 @@ export class Login extends Component {
                         visible={this.state.spinnerLoading}
                     />
                     <br></br>
-                    <p className="tag is-warning is-medium">A project by Junaid H Rahim</p>
+                    <p className="tag is-warning is-medium">A project by Sales Department - Desire Foundation</p>
                 </div>
             </div>
         )
