@@ -37,7 +37,7 @@ export class Dashboard extends Component {
         document.location.href = "https://desiresalesportal.team"
     }
 
-    componentDidMount = () => {
+    componentDidMount = () : void => {
         const email_id : any = localStorage.getItem("email_id");
         const password : any = localStorage.getItem("password");
         
