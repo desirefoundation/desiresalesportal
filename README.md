@@ -18,7 +18,7 @@ This project aims to streamline the data management process.
 ## Tools Used
 
 * The database and authentication is handled by **Firebase**. 
-* The UI is developed in **React**. 
+* The UI is developed in **React** with **Typescript**. 
 * **Bootstrap** is used for CSS components
 
 live at https://desiresalesportal.team
