@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { HashRouter as Router, Link, Route, Switch, Redirect } from 'react-router-dom'
+import Loader from 'react-loader-spinner'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './dashboard.css'
@@ -12,6 +13,11 @@ import Exchange from './Exchange/Exchange'
 import About from './About/About'
 
 import firebaseapp from '../../firebase'
+
+// Constants
+const currentLotNumber: number = 4;
+const currentLotDescription: string = "Netflix Copies";
+const price : number = 40;
 
 export class Dashboard extends Component {
 
@@ -43,7 +49,6 @@ export class Dashboard extends Component {
         
         this.auth.signInWithEmailAndPassword(email_id, password)
             .then(() => {
-                console.log("Fetching Data")
                 const uid : string | undefined = this.auth.currentUser?.uid;
                 
                 // Get Sales Data
@@ -78,6 +83,25 @@ export class Dashboard extends Component {
         
         if ((loginStatus === null) || (loginStatus === "false")){
             return <Redirect to="/login"></Redirect>
+        }
+        
+        if (!(this.state.salesDataFetched && this.state.customerDataFetched && this.state.usersListFetched)) {
+            return (
+                <div style={{textAlign: 'center'}}>
+                    <br></br>
+                    <br></br>
+
+                    <Loader
+                        type="Puff"
+                        color="#00BFFF"
+                        height={50}
+                        width={50}
+                        visible={true}
+                    />
+                    <br></br>
+                    <h3 className="loading-text">Loading your Sales Dashboard</h3>
+                </div>
+            )
         }
 
         return (
@@ -116,10 +140,29 @@ export class Dashboard extends Component {
                     </nav>
 
                     <Switch>
-                        <Route exact={true} path="/dashboard" component={() => <Overview></Overview>}></Route>
+                        <Route 
+                            exact={true} 
+                            path="/dashboard" 
+                            component={
+                                () => {
+                                    return <Overview 
+                                                lotNumber={currentLotNumber} 
+                                                lotDescription={currentLotDescription} 
+                                                price={price}
+                                                data={this.state.salesData}
+                                            ></Overview>
+                                }
+                            }
+                        >
+
+                        </Route>
+                        
                         <Route exact={true} path="/dashboard/sales" component={() => <Sales></Sales>}></Route>
+                        
                         <Route exact={true} path="/dashboard/stock" component={() => <Stock></Stock>}></Route>
+                        
                         <Route exact={true} path="/dashboard/exchange" component={() => <Exchange></Exchange>}></Route>
+                        
                         <Route exact={true} path="/dashboard/about" component={() => <About></About>}></Route>
                     </Switch>
                 </div>

@@ -2,3 +2,12 @@
     font-family: 'Rubik', sans-serif;
     font-size: 1.6rem
 }
+
+.loading-text {
+    margin: 0rem;
+    padding: 0rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 300;
+}

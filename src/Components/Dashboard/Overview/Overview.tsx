@@ -2,27 +2,86 @@ import React, { Component } from 'react'
 
 import './overview.css'
 
-export class Overview extends Component {
+
+type overviewdata = {
+    amountPaidToCorrdinator?: any
+    buddygroup?: number
+    copiesTaken?: any
+    copyTransactions?: any
+    defective?: any
+    email?: string
+    lastUpdated?: string
+    name?: string
+    soldTillDateCash?: any
+    soldTillDatePaytm?: any
+}
+
+
+type props = {
+    data: overviewdata
+    lotNumber: number
+    lotDescription: string
+    price: number
+}
+export class Overview extends Component<props> {
+    
+    getLotNumberString = () : string => "lot" + this.props.lotNumber.toString()
+    
+    calculateCopiesLeft = () : number => {
+        const lotNumber : string = this.getLotNumberString()
+        const copiesLeft: number = this.props.data.copiesTaken[lotNumber] - this.props.data.defective[lotNumber]
+
+        return copiesLeft;
+    }
+
+    calculateTotalSold = () : number => {
+        const lotNumber : string = this.getLotNumberString()
+        const cash: number = parseInt(this.props.data.soldTillDateCash[lotNumber])
+        const paytm: number = parseInt(this.props.data.soldTillDatePaytm[lotNumber])
+        
+        return cash+paytm
+    }
+
+    calculateTotalExchanged = () : number => {
+        let totalExchanged: number = 0
+        const length : number = this.props.data.copyTransactions.length
+
+        for(let i: number = 1; i<length; i++) {
+            if(parseInt(this.props.data.copyTransactions[i].lot) === this.props.lotNumber)
+                totalExchanged += parseInt(this.props.data.copyTransactions[i].amount);
+        }
+
+        return totalExchanged
+    }
+
+    calculateCopiesLeftInHand = () : number => {
+        const lotNumber : string = this.getLotNumberString()
+        const left = this.props.data.copiesTaken[lotNumber] - this.props.data.defective[lotNumber] 
+                    - this.calculateTotalSold() + this.calculateTotalExchanged()
+        
+        return left
+    }
     
     render() {
         return (
             <div>
-                <h2 className="overview-header">Hi <span>Junaid</span></h2>
+                <h2 className="overview-header">Hi <span>{this.props.data.name}</span></h2>
 
                 <div className="profile-details-container">
                     <h5>
-                        <i className="fas fa-envelope-open-text" style={{color: '#0d47a1', marginRight: '0.7rem'}}></i>
-                        Email : <span>junaidrahim5a@gmail.com</span>
+                        Email : <span>{this.props.data.email}</span>
                     </h5>
                     
                     <h5>
-                        <i className="fas fa-users" style={{color: '#0d47a1', marginRight: '0.4rem'}}></i>
-                        Buddy Group : <span>4</span>
+                        Buddy Group : <span>{this.props.data.buddygroup}</span>
                     </h5>
                     
                     <h5>
-                        <i className="fas fa-truck-loading" style={{color: '#0d47a1', marginRight: '0.4rem'}}></i>
-                        Current Lot : <span>3</span>
+                        Current Lot : <span>{this.props.lotNumber}</span>
+                    </h5>
+
+                    <h5>
+                        Lot Description : <span>{this.props.lotDescription}</span>
                     </h5>
                 </div>
 
@@ -30,28 +89,28 @@ export class Overview extends Component {
                     <div>
                         <h2 style={{textAlign: 'center'}}>Sales</h2>
                         <br></br>
-                        <h5>Total Sold : </h5>
-                        <h5>Total Sale Revenue : </h5>
+                        <h5>Total Sold : {this.calculateTotalSold()}</h5>
+                        <h5>Total Sale Revenue : {this.calculateTotalSold() * this.props.price}</h5>
                     </div>
                     
                     <div>
                         <h2 style={{textAlign: 'center'}}>Stock</h2>
                         <br></br>
-                        <h5>Copies Left in Hand : </h5>
+                        <h5>Copies Left in Hand : {this.calculateCopiesLeftInHand()}</h5>
                         <br></br>
-                        <h5>Defective : </h5>
-                        <h5>Copies Taken : </h5>
+                        <h5>Copies Taken : {this.props.data.copiesTaken[this.getLotNumberString()]}</h5>
+                        <h5>Defective : {this.props.data.defective[this.getLotNumberString()]}</h5>
                     </div>
 
                     <div>
                         <h2 style={{textAlign: 'center'}}>Exchanges</h2>
                         <br></br>
-                        <h5>Total Exchanged: </h5>
+                        <h5>Total Exchanged: {this.calculateTotalExchanged()}</h5>
                     </div>
                 </div>
                 
-                <canvas id="pieChart" width="400" height="400"></canvas>
-
+                <br></br>
+                
                 <div className="last-updated-container">
                     <p>Last Updated on : { new Date().toString() }</p>
                 </div>
