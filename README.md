@@ -27,12 +27,15 @@ live at https://desiresalesportal.team
 * Pull Requests and code for new features go in the `development` branch.
 * Pull Requests merged to `master` from `development` are built and deployed to production.
 
+## Screenshots
+
+![](screenshots/a.png)
+
 
 ## LICENSE
 Copyright (c) **Junaid H Rahim**. All rights reserved.
 
 [![](https://img.shields.io/github/license/junaidrahim/desiresalesportal?style=for-the-badge)](LICENSE)
-
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
