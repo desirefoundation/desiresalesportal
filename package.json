@@ -46,6 +46,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@types/jest": "^24.9.0",
-    "ts-jest": "^25.0.0"
+    "ts-jest": "^25.0.0",
+    "typedoc": "^0.17.3"
   }
 }

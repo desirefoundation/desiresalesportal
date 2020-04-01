@@ -14,7 +14,6 @@ This project aims to streamline the data management process.
 ![Travis (.com)](https://img.shields.io/travis/com/junaidrahim/desiresalesportal?style=for-the-badge)
 
 
-
 ## Tools Used
 
 * The database and authentication is handled by **Firebase**. 
@@ -23,7 +22,20 @@ This project aims to streamline the data management process.
 
 live at https://desiresalesportal.team
 
-## Workflow
+## Getting Started
+
+Its a regular React app that uses TypeScript. [Typedoc](https://typedoc.org/) is used to generate documentation.
+
+Run `npm i -g typedoc` to install typedoc. Make sure you have TypeScript installed globally.
+
+* `npm start` to run the dev server
+* Run `typedoc` to generate documentation in the `docs/` folder
+
+
+## Development Workflow
+
+It is advised to fork the repository and make the changes in the `development` branch.
+
 * Pull Requests and code for new features go in the `development` branch.
 * Pull Requests merged to `master` from `development` are built and deployed to production.
 
